@@ -1,0 +1,74 @@
+# tidy Metrica data
+
+library(readr)
+library(dplyr)
+library(tidyr)
+
+# game1_home <- read_csv("Sample_Game_1_RawTrackingData_Home_Team.csv")
+# glimpse(game1_home)
+# names(game1_home) <- game1_home[2, ]
+# game1_home <- game1_home %>%
+#         slice(-c(1:2))
+
+data_metrica <- readRDS("metrica_tracking_tidy.rds")
+glimpse(data_metrica)
+
+
+# read data
+filename_home <- "data/Sample_Game_1_RawTrackingData_Home_Team.csv"
+track_home <- read_csv(filename_home, skip=2)
+filename_away <- "data/Sample_Game_1_RawTrackingData_Away_Team.csv"
+track_away <- read_csv(filename_away, skip=2)
+
+names(track_home)
+names(track_away)
+
+
+# home team
+player_names_home <- track_home %>%
+        select_at(vars(starts_with(c("Player", "Ball")))) %>%
+        names()
+
+track_home_long <- track_home %>%
+        rename_at(vars(starts_with(c("Player", "Ball"))), funs(paste0(., "_pos_x"))) %>%
+        rename_at(vars(starts_with("X")), funs(paste0(player_names_home, "_pos_y"))) %>%
+        pivot_longer(cols = starts_with(c("Player", "Ball")),
+                     names_to = c("Player", ".value"),
+                     names_pattern = "Player(.*)_pos_(.)") %>%
+        mutate(team = "home")
+
+names(track_home_long)
+
+
+# away team
+player_names_away <- track_away %>%
+        select_at(vars(starts_with(c("Player", "Ball")))) %>%
+        names()
+
+track_away_long <- track_away %>%
+        rename_at(vars(starts_with(c("Player", "Ball"))), funs(paste0(., "_pos_x"))) %>%
+        rename_at(vars(starts_with("X")), funs(paste0(player_names_away, "_pos_y"))) %>%
+        pivot_longer(cols = starts_with(c("Player", "Ball")),
+                     names_to = c("Player", ".value"),
+                     names_pattern = "Player(.*)_pos_(.)") %>%
+        mutate(team = "away")
+
+track_data_long <- track_home_long %>%
+                bind_rows(track_away_long) %>%
+                mutate(Period = as.integer(Period),
+                       Frame = as.integer(Frame)) %>%
+                dplyr::rename("Time" = "Time [s]")
+
+write_rds(track_data_long, "track_data_long.rds")
+
+glimpse(track_data_long)
+
+
+library(testthat)
+test_that("testing get_tidy_data()", {
+        get_tidy_data(home_team_file = "data/Sample_Game_1_RawTrackingData_Home_Team.csv",
+                      away_team_file = "data/Sample_Game_1_RawTrackingData_Away_Team.csv") %>%
+                testthat::expect_equal(track_data_long)
+})
+
+

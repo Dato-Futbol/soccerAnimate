@@ -1,0 +1,5 @@
+test_that("testing get_tidy_data()", {
+        get_tidy_data(home_team_file = "data/Sample_Game_1_RawTrackingData_Home_Team.csv",
+                      away_team_file = "data/Sample_Game_1_RawTrackingData_Away_Team.csv") %>%
+                testthat::expect_equal(x)
+})

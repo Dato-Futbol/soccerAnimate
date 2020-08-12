@@ -1,0 +1,4 @@
+library(testthat)
+library(soccerAnimate)
+
+test_check("soccerAnimate")
