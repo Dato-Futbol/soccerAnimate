@@ -1,8 +1,8 @@
-#' Reads and converts both the home and away team rawdata to tidy data (long format)
+#' A function to convert both the home and away team rawdata to tidy data (long format)
 #'
-#' @param home_team_file set the filename which contains the data of the home team
-#' @param away_team_file set the filename which contains the data of the away team
-#' @param provider set the name of the tracking data provider which defines the data format
+#' @param home_team_file A character variable to set the filename which contains the data of the home team
+#' @param away_team_file A character variable to set the filename which contains the data of the away team
+#' @param provider A character variable to set the name of the tracking data provider which defines the data format
 #' @param convert_coord A boolean variable to set if the coordinates should to be converted to meters
 #'
 #' @return The dataframe with all tidy data joined (long format)
@@ -29,8 +29,7 @@ get_tidy_data <- function(home_team_file, away_team_file, provider = "Metrica", 
                         tidyr::pivot_longer(cols = starts_with("Player"),
                                             names_to = c("Player", ".value"),
                                             names_pattern = "Player(.*)_p(.)") %>%
-                        dplyr::mutate(Team = "Home",
-                                      is_gk = ifelse(Player == gsub("Player", "", player_names_home[1]), T, F))
+                        dplyr::mutate(Team = "Home")
 
                 # away team
                 track_away <- read_csv(away_team_file, skip=2)
@@ -46,16 +45,13 @@ get_tidy_data <- function(home_team_file, away_team_file, provider = "Metrica", 
                         tidyr::pivot_longer(cols = starts_with("Player"),
                                             names_to = c("Player", ".value"),
                                             names_pattern = "Player(.*)_p(.)") %>%
-                        dplyr::mutate(Team = "Away",
-                                      is_gk = ifelse(Player == gsub("Player", "", player_names_away[1]), T, F))
+                        dplyr::mutate(Team = "Away")
 
                 # ball
                 track_ball_long <- track_home %>%
                         dplyr::mutate(Player = "", Team = "Ball") %>%
                         dplyr::rename("x" = "Ball", "y" = "X33") %>%
-                        dplyr::mutate(is_gk = F) %>%
                         dplyr::select(names(track_home_long))
-
 
                 #bind rows
                 track_data_long <- track_home_long %>%

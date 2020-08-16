@@ -2,20 +2,27 @@
 % Please edit documentation in R/get_tidy_data.R
 \name{get_tidy_data}
 \alias{get_tidy_data}
-\title{A function}
+\title{Reads and converts both the home and away team rawdata to tidy data (long format)}
 \usage{
-get_tidy_data(provider = "Metrica", home_team_file, away_team_file)
+get_tidy_data(
+  home_team_file,
+  away_team_file,
+  provider = "Metrica",
+  convert_coord = T
+)
 }
 \arguments{
-\item{provider}{A character variable to set the name of the tracking data provider which defines the data format}
+\item{home_team_file}{set the filename which contains the data of the home team}
 
-\item{home_team_file}{A character variable to set the filename which contains the data of the home team}
+\item{away_team_file}{set the filename which contains the data of the away team}
 
-\item{away_team_file}{A character variable to set the filename which contains the data of the away team}
+\item{provider}{set the name of the tracking data provider which defines the data format}
+
+\item{convert_coord}{A boolean variable to set if the coordinates should to be converted to meters}
 }
 \value{
 The dataframe with all tidy data joined (long format)
 }
 \description{
-A function
+Reads and converts both the home and away team rawdata to tidy data (long format)
 }

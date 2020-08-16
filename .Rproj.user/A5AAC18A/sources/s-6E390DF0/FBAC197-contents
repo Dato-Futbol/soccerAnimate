@@ -1,0 +1,263 @@
+
+# tidy Metrica data
+#####################
+library(readr)
+library(dplyr)
+library(tidyr)
+
+###############################
+# game1_home <- read_csv("Sample_Game_1_RawTrackingData_Home_Team.csv")
+# glimpse(game1_home)
+# names(game1_home) <- game1_home[2, ]
+# game1_home <- game1_home %>%
+#         slice(-c(1:2))
+
+data_metrica <- readRDS("metrica_tracking_tidy.rds")
+glimpse(data_metrica)
+
+url <- "https://raw.githubusercontent.com/metrica-sports/sample-data/master/data/Sample_Game_1/Sample_Game_1_RawTrackingData_Away_Team.csv"
+x <- read_csv(url, skip=2)
+
+# read data
+filename_home <- "tests/testthat/data/Sample_Game_1_RawTrackingData_Home_Team.csv"
+track_home <- read_csv(filename_home, skip=2)
+filename_away <- "tests/testthat/data/Sample_Game_1_RawTrackingData_Away_Team.csv"
+track_away <- read_csv(filename_away, skip=2)
+
+names(track_home)
+names(track_away)
+
+
+# home team
+player_names_home <- track_home %>%
+        select_at(vars(starts_with(c("Player", "Ball")))) %>%
+        names()
+
+track_home_long <- track_home %>%
+        rename_at(vars(starts_with(c("Player", "Ball"))), funs(paste0(., "_pos_x"))) %>%
+        rename_at(vars(starts_with("X")), funs(paste0(player_names_home, "_pos_y"))) %>%
+        pivot_longer(cols = starts_with(c("Player", "Ball")),
+                     names_to = c("Player", ".value"),
+                     names_pattern = "Player(.*)_pos_(.)") %>%
+        mutate(team = "home")
+
+names(track_home_long)
+
+
+# away team
+player_names_away <- track_away %>%
+        select_at(vars(starts_with(c("Player", "Ball")))) %>%
+        names()
+
+track_away_long <- track_away %>%
+        rename_at(vars(starts_with(c("Player", "Ball"))), funs(paste0(., "_pos_x"))) %>%
+        rename_at(vars(starts_with("X")), funs(paste0(player_names_away, "_pos_y"))) %>%
+        pivot_longer(cols = starts_with(c("Player", "Ball")),
+                     names_to = c("Player", ".value"),
+                     names_pattern = "Player(.*)_pos_(.)") %>%
+        mutate(team = "away")
+
+track_data_long <- track_home_long %>%
+                bind_rows(track_away_long) %>%
+                mutate(Period = as.integer(Period),
+                       Frame = as.integer(Frame)) %>%
+                dplyr::rename("Time" = "Time [s]")
+
+write_rds(track_data_long, "track_data_long.rds")
+
+glimpse(track_data_long)
+###############################
+
+
+## ver get_tidy_data() official function
+
+track_data_long <- get_tidy_data(home_team_file = "tests/testthat/data/Sample_Game_1_RawTrackingData_Home_Team.csv",
+                                 away_team_file = "tests/testthat/data/Sample_Game_1_RawTrackingData_Away_Team.csv")
+
+library(testthat)
+test_that("testing get_tidy_data()", {
+        get_tidy_data(home_team_file = "data/Sample_Game_1_RawTrackingData_Home_Team.csv",
+                      away_team_file = "data/Sample_Game_1_RawTrackingData_Away_Team.csv") %>%
+                testthat::expect_equal(track_data_long)
+})
+
+
+
+
+#####################
+
+
+# plot a soccer field
+#####################
+library(ggplot2)
+library(ggforce)
+library(ggsoccer)
+
+get_pitch <- function(fill = "#74a9cf",  #"#7fcdbb"
+                      colour = "black"){
+
+        ggplot() +
+                theme_bw() +
+                theme(axis.title.x = element_blank(),
+                      axis.text.x = element_blank(),
+                      axis.ticks.x = element_blank(),
+                      axis.title.y = element_blank(),
+                      axis.text.y = element_blank(),
+                      axis.ticks.y = element_blank(),
+                      panel.grid.major = element_blank(),
+                      panel.grid.minor = element_blank(),
+                      panel.background = element_rect(fill = fill),
+                      plot.margin = unit(c(0.3, 0.3, 0.3, 0.3), "cm")) +
+                scale_x_continuous(limits = c(-5, 110), expand = c(0, 0)) +
+                scale_y_continuous(limits = c(-5, 73), expand = c(0, 0)) +
+                #ggtitle("Soccer pitch", "with ggplot2") +
+                geom_rect(aes(xmin = 0, xmax = 105, ymin = 0, ymax = 68), fill = fill, col = colour) +
+                geom_rect(aes(xmin = 0, xmax = 16.5, ymin = 13.85, ymax = 54.15), fill = fill, col = colour) +
+                geom_rect(aes(xmin = 88.5, xmax = 105, ymin = 13.85, ymax = 54.15), fill = fill, col = colour) +
+                geom_rect(aes(xmin = 0, xmax = 5.5, ymin = 24.85, ymax = 43.15), fill = fill, col = colour) +
+                geom_rect(aes(xmin = 99.5, xmax = 105, ymin = 24.85, ymax = 43.15), fill = fill, col = colour) +
+                geom_rect(aes(xmin = -2, xmax = 0, ymin = 30.34, ymax = 37.66), fill = "transparent", col = colour) +
+                geom_rect(aes(xmin = 105, xmax = 107, ymin = 30.34, ymax = 37.66), fill = "transparent", col = colour) +
+                geom_circle(aes(x0 = 52.5, y0 = 34, r = 9.15), fill = fill, col = colour) +
+                geom_segment(aes(x = 52.5, xend = 52.5, y = 0, yend = 68), col = colour) +
+                geom_point(aes(x = 11, y = 34)) +
+                geom_point(aes(x = 94, y = 34)) +
+                geom_point(aes(x = 52.5, y = 34)) +
+                geom_arc(aes(x0 = 11, y0 = 34, r = 9.15, start = 37*pi/180, end = 143*pi/180)) +
+                geom_arc(aes(x0 = 94, y0 = 34, r = 9.15, start = -37*pi/180, end = -143*pi/180)) +
+                geom_arc(aes(x0 = 0, y0 = 0, r = 1, start = 0, end = 90*pi/180)) +
+                geom_arc(aes(x0 = 0, y0 = 68, r = 1, start = 90*pi/180, end = 180*pi/180)) +
+                geom_arc(aes(x0 = 105, y0 = 68, r = 1, start = 180*pi/180, end = 270*pi/180)) +
+                geom_arc(aes(x0 = 105, y0 = 0, r = 1, start = 270*pi/180, end = 360*pi/180))
+}
+
+
+
+#####################
+
+
+# animate!
+#####################
+require(dplyr)
+require(tidyr)
+require(stringr)
+#require(soccermatics)
+#require(ggsoccer)
+require(ggplot2)
+require(gganimate)
+require(ggforce)
+require(gifski)
+#require(transformr)
+
+soccerAnimate <- function(tidy_data, ini_time, end_time, method = c("clean", "convexhull", "voronoi"),
+                          pitch_col = "#74a9cf", home_team_col = "white", away_team_col= "#dd3497",
+                          title = "", subtitle = "",
+                          provider = "Metrica", show = T, export_gif= T, gifname = "output"){
+
+        if(end_time > ini_time){
+                data <- tidy_data %>%
+                        filter(!is.nan(x) & !is.nan(y) & Sample >= ini_time & Sample <= end_time)
+                
+                sp <- get_pitch(fill = pitch_col)
+                
+                if (provider == "Metrica"){
+                        
+                        if (method=="clean"){
+                                
+                                anim <- sp
+                        }
+                        
+                        if (method=="convexhull"){
+                                
+                                hull_data <- data %>%
+                                        filter(Team != "Ball" & is_gk == F) %>%
+                                        group_by(Time, Team) %>%
+                                        slice(chull(x, y))
+                                
+                                anim <- sp +
+                                        geom_polygon(data = hull_data, 
+                                                     aes(x = x, y = y, fill = factor(Team)), 
+                                                     alpha=0.3, inherit.aes = T)
+                        }
+                        
+                        if (method=="voronoi"){
+                                
+                                vor_data <- data %>%
+                                        filter(Team != "Ball")
+                                
+                                anim <- sp +
+                                        geom_voronoi_tile(data = vor_data,
+                                                          mapping = aes(x = x, y = y, fill = factor(Team), group = -1L),
+                                                          colour = 'black', alpha = 0.3, bound = c(0, 105, 0, 68), inherit.aes = T)
+                        }
+                        
+                        anim <- anim +
+                                geom_point(data = data,
+                                           aes(x = x, y = y, fill = factor(Team), size = factor(Team)),
+                                           col = "black", shape = 21, stroke = 1, alpha = 0.8,
+                                           inherit.aes = T) +
+                                geom_text(data = data, aes(label = Player, x = x, y = y, col = Team),
+                                          inherit.aes = T) +
+                                transition_time(Time) +
+                                theme(title = element_text(colour = "black", face = "bold", size = 12),
+                                      legend.position = "none") +
+                                scale_size_manual(values = c(8,4,8)) +
+                                scale_fill_manual(values = c(away_team_col, "darkblue", home_team_col)) +
+                                scale_colour_manual(values = c("white", "darkblue", "black"))
+                        #ggtitle(title = title, subtitle = subtitle)
+                        
+                        
+                        a <- animate(anim,
+                                     width = 900, height = 600,
+                                     nframes = length(unique(data$Sample))*25, fps = 25)
+                        
+                        if (show){
+                                print(a)
+                        }
+                        
+                        if (export_gif){
+                                print(a)
+                                anim_save(paste0(gifname, ".gif"))
+                        }
+                        
+                } else{
+                        message("Currently only the data format of Metrica Sport provider is supported. 
+                        If you have a dataset either from a different provider or with another format, 
+                        please create an issue here: https://github.com/Dato-Futbol/soccerAnimate/issues")
+                }
+        } else{
+                message("Ending time should to be higer than initial time")
+        }
+
+}
+
+
+soccerAnimate(tidy_data = track_data_long, ini_time = 3592, end_time = 3605, method = "clean")
+
+
+#####################
+
+
+# search specific events
+###############################
+event_data <- read_csv("Sample_Game_1_RawEventsData.csv")
+
+table(events$Type)
+table(events[which(events$Type == "RECOVERY"), "Subtype"])
+
+get_events <- function(data = event_data, events = c("SHOT", "GOAL", "FREE KICK", "CORNER KICK")){
+        
+        data <- data %>%
+                mutate(Event = ifelse(Type == "SHOT" & stringr::str_detect(Subtype, '-GOAL'), "GOAL", 
+                                       ifelse(Type == "SET PIECE",  Subtype, Type))) 
+        
+        data %>%
+                dplyr::filter(Event %in% events) %>%
+                dplyr::select(c(1:4, 6, 8, ncol(data)))
+}
+
+x <- get_events(data, events = "GOAL")
+
+
+###############################
+

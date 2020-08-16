@@ -1,0 +1,21 @@
+#' Searches time ocurrence and other information of specific events
+#'
+#' @param data event dataframe previously loaded
+#' @param events one or more events to search
+#'
+#' @return dataframe with searched events and their specific info
+#' @import dplyr
+#' @importFrom magrittr %>%
+#' @importFrom stringr str_detect
+#' @export
+#'
+get_events <- function(data = event_data, events = c("SHOT", "GOAL", "FREE KICK", "CORNER KICK")){
+
+        data <- data %>%
+                dplyr::mutate(Event = ifelse(Type == "SHOT" & stringr::str_detect(Subtype, '-GOAL'), "GOAL",
+                                             ifelse(Type == "SET PIECE",  Subtype, Type)))
+
+        data %>%
+                dplyr::filter(Event %in% events) %>%
+                dplyr::select(c(1:4, 6, 8, ncol(data)))
+}

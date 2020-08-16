@@ -15,9 +15,8 @@ License: GPL-2
 Imports:
   dplyr,
   gganimate,
-  ggforce,
   ggplot2,
-  grDevices,
+  ggforce,
   magrittr,
   readr,
   stringr,
