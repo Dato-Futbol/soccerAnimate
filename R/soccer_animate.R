@@ -27,6 +27,7 @@
 #' @import gifski
 #' @importFrom grDevices chull
 #' @importFrom magrittr %>%
+#' @export
 #'
 soccer_animate <- function(tidy_data, ini_time, end_time, method = "base",
                           pitch_fill = "#74a9cf", pitch_lines_col = "lightgrey",
