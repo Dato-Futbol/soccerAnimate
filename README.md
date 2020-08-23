@@ -39,7 +39,7 @@ soccer_plot(tidy_data = td, frame = 99035)
 ```
 
 ### 4) To create a 2D soccer animation
-**soccer_animate** function creates 2D soccer animations using tracking data. You are able to set multiple arguments besides tidy tracking data, like initial and end time to animate (in seconds, no frames!), geometric or spatial analysis method (options: "base", "convexhull", "voronoi", "delaunay"), aesthetics setting (colors of pitch fill and lines, teams colors, titles, etc.), data provider and output setting. Most of this arguments are enabled also for **soccer_plot** function.
+**soccer_animate()** function creates 2D soccer animations using tracking data. You are able to set multiple arguments besides tidy tracking data, like initial and end time to animate (in seconds, no frames!), geometric or spatial analysis method (options: "base", "convexhull", "voronoi", "delaunay"), aesthetics setting (colors of pitch fill and lines, teams colors, titles, etc.), data provider and output setting. Most of this arguments are enabled also for **soccer_plot()** function.
 
 ```
 # example A
@@ -51,8 +51,8 @@ soccer_animate(tidy_data = td, ini_time = 3956, end_time = 3960, method = "conve
              subtitle = "Metrica Sport open tracking data - Game 1")
                         
 # example C
-soccer_animate(tidy_data = td, ini_time = 3956, end_time = 3960, method = "convexhull", export_gif = T,
-             title = "Convex Hull from second 3956 to 3960",
+soccer_animate(tidy_data = td, ini_time = 3956, end_time = 3960, method = "voronoi", export_gif = T,
+             title = "Voronoi tesselations from second 3956 to 3960",
              subtitle = "Metrica Sport open tracking data - Game 1")
 ```
 
@@ -61,15 +61,14 @@ soccer_animate(tidy_data = td, ini_time = 3956, end_time = 3960, method = "conve
 * A pitch of dimensions 105x68 meters is considered.
 * Reverted coordinates for Period 2: Teams are always attacking in the same direction.
 
+### Currently working on
 
-## Currently working on
-
-* Get player and teams stats (minutes played, distance, velocity)
+* Get players and teams stats (minutes played, distance, velocity)
 * Adding events visualization
 * Improving documentation
 * More aesthetics user customization (color/fill themes, fonts)
 
-## TO DO
+### TO DO
 
 * defensive marking
 * pitch control model
