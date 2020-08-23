@@ -1,0 +1,20 @@
+# how to create a R package:
+# https://keithmcnulty.github.io/r_package_training/index.html
+
+library(devtools)
+library(usethis)
+library(testthat)
+
+devtools::install_github("keithmcnulty/isawesome")
+library(isawesome)
+isawesome("")
+
+
+devtools::check()
+
+usethis::use_readme_rmd()
+
+
+#C:\Users\POPOCHITOS\Documents\R\Projects\blog\r_packages\soccerAnimate
+
+devtools::install_github("https://github.com/Dato-Futbol/soccerAnimate")
