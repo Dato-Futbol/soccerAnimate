@@ -67,6 +67,7 @@ soccer_animate(tidy_data = td, ini_time = 3956, end_time = 3960, method = "voron
 * Adding events visualization
 * Improving documentation
 * More aesthetics user customization (color/fill themes, fonts)
+* Creating the hex sticker (!)
 
 ### TO DO
 
