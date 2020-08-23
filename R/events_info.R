@@ -12,10 +12,13 @@
 events_info <- function(data, events = c("SHOT", "GOAL", "FREE KICK", "CORNER KICK")){
 
         data <- data %>%
-                dplyr::mutate(Event = ifelse(Type == "SHOT" & stringr::str_detect(Subtype, '-GOAL'), "GOAL",
-                                             ifelse(Type == "SET PIECE",  Subtype, Type)))
+                dplyr::mutate(Event = ifelse(Type == "SHOT" & stringr::str_detect(Subtype, '-GOAL'),
+                                                     "GOAL", ifelse(Type == "SET PIECE",  Subtype, Type)))
 
         data %>%
                 dplyr::filter(Event %in% events) %>%
-                dplyr::select(c(1:4, 6, 8, ncol(data)))
+                dplyr::select(c(Team, Type, Subtype, Period,
+                                StartTime = "Start Time [s]", EndTime ="End Time [s]",
+                                StartFrame = "Start Frame", EndFrame = "End Frame", Event))
+                                #"From", "To", x1 = "Start X", y1 = "Start Y", x2 = "End X", y2 = "End Y"))
 }

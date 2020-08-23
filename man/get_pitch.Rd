@@ -4,7 +4,7 @@
 \alias{get_pitch}
 \title{Draws a soccer pitch as a ggplot background layer}
 \usage{
-get_pitch(pitch_fill = "#74a9cf", pitch_col = "black")
+get_pitch(pitch_fill = "#74a9cf", pitch_col = "lightgrey")
 }
 \arguments{
 \item{pitch_fill}{colour used to fill the pitch}
@@ -17,3 +17,4 @@ ggplot object
 \description{
 Draws a soccer pitch as a ggplot background layer
 }
+\keyword{internal}

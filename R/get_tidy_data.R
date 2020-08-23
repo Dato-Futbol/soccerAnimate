@@ -1,4 +1,4 @@
-#' Reads and converts both the home and away team rawdata to tidy data (long format)
+#' Reads and converts both the home and away team Metrica Sport rawdata to tidy data (long format)
 #'
 #' @param home_team_file set the filename which contains the data of the home team
 #' @param away_team_file set the filename which contains the data of the away team
@@ -16,7 +16,7 @@ get_tidy_data <- function(home_team_file, away_team_file, provider = "Metrica", 
 
         if(provider == "Metrica"){
                 # home team
-                track_home <- read_csv(home_team_file, skip=2)
+                track_home <- suppressWarnings(read_csv(home_team_file, skip=2))
 
                 player_names_home <- track_home %>%
                         dplyr::select_at(dplyr::vars(starts_with("Player"))) %>%
@@ -24,8 +24,8 @@ get_tidy_data <- function(home_team_file, away_team_file, provider = "Metrica", 
 
                 track_home_long <- track_home %>%
                         dplyr::select(-c(32, 33)) %>%
-                        dplyr::rename_at(dplyr::vars(starts_with("Player")), funs(paste0(., "_px"))) %>%
-                        dplyr::rename_at(dplyr::vars(starts_with("X")), funs(paste0(player_names_home, "_py"))) %>%
+                        dplyr::rename_at(dplyr::vars(starts_with("Player")), list(~paste0(., "_px"))) %>%
+                        dplyr::rename_at(dplyr::vars(starts_with("X")), list(~paste0(player_names_home, "_py"))) %>%
                         tidyr::pivot_longer(cols = starts_with("Player"),
                                             names_to = c("Player", ".value"),
                                             names_pattern = "Player(.*)_p(.)") %>%
@@ -33,7 +33,7 @@ get_tidy_data <- function(home_team_file, away_team_file, provider = "Metrica", 
                                       is_gk = ifelse(Player == gsub("Player", "", player_names_home[1]), T, F))
 
                 # away team
-                track_away <- read_csv(away_team_file, skip=2)
+                track_away <- suppressWarnings(read_csv(away_team_file, skip=2))
 
                 player_names_away <- track_away %>%
                         dplyr::select_at(dplyr::vars(starts_with("Player"))) %>%
@@ -41,8 +41,8 @@ get_tidy_data <- function(home_team_file, away_team_file, provider = "Metrica", 
 
                 track_away_long <- track_away %>%
                         dplyr::select(-c(32, 33)) %>%
-                        dplyr::rename_at(dplyr::vars(starts_with("Player")), funs(paste0(., "_px"))) %>%
-                        dplyr::rename_at(dplyr::vars(starts_with("X")), funs(paste0(player_names_away, "_py"))) %>%
+                        dplyr::rename_at(dplyr::vars(starts_with("Player")), list(~paste0(., "_px"))) %>%
+                        dplyr::rename_at(dplyr::vars(starts_with("X")), list(~paste0(player_names_away, "_py"))) %>%
                         tidyr::pivot_longer(cols = starts_with("Player"),
                                             names_to = c("Player", ".value"),
                                             names_pattern = "Player(.*)_p(.)") %>%
@@ -64,12 +64,12 @@ get_tidy_data <- function(home_team_file, away_team_file, provider = "Metrica", 
                         dplyr::rename("Time" = "Time [s]") %>%
                         dplyr::mutate(Period = as.integer(Period),
                                       Frame = as.integer(Frame),
-                                      Sample = floor(Time))
+                                      Second = floor(Time))
 
                 if (convert_coord){
                         track_data_long <- track_data_long %>%
                                 dplyr::mutate(y = 68 * (1 - y),
-                                              x = 105 * x)
+                                              x = ifelse(Period == 1, 105 * x, 105 * (1 - x)))
                 }
 
                 track_data_long

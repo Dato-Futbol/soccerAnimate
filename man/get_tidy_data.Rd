@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_tidy_data.R
 \name{get_tidy_data}
 \alias{get_tidy_data}
-\title{Reads and converts both the home and away team rawdata to tidy data (long format)}
+\title{Reads and converts both the home and away team Metrica Sport rawdata to tidy data (long format)}
 \usage{
 get_tidy_data(
   home_team_file,
@@ -24,5 +24,5 @@ get_tidy_data(
 The dataframe with all tidy data joined (long format)
 }
 \description{
-Reads and converts both the home and away team rawdata to tidy data (long format)
+Reads and converts both the home and away team Metrica Sport rawdata to tidy data (long format)
 }

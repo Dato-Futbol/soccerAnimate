@@ -7,10 +7,12 @@
 #' @import ggplot2
 #' @importFrom ggforce geom_circle
 #' @importFrom ggforce geom_arc
+#' @NoRd
+#' @keywords internal
 #' @export
 #'
 
-get_pitch <- function(pitch_fill = "#74a9cf", pitch_col = "black"){
+get_pitch <- function(pitch_fill = "#74a9cf", pitch_col = "lightgrey"){
 
         ggplot() +
                 theme_bw() +
@@ -36,13 +38,13 @@ get_pitch <- function(pitch_fill = "#74a9cf", pitch_col = "black"){
                 geom_rect(aes(xmin = 105, xmax = 107, ymin = 30.34, ymax = 37.66), fill = "transparent", col = pitch_col) +
                 geom_circle(aes(x0 = 52.5, y0 = 34, r = 9.15), fill = pitch_fill, col = pitch_col) +
                 geom_segment(aes(x = 52.5, xend = 52.5, y = 0, yend = 68), col = pitch_col) +
-                geom_point(aes(x = 11, y = 34)) +
-                geom_point(aes(x = 94, y = 34)) +
-                geom_point(aes(x = 52.5, y = 34)) +
-                geom_arc(aes(x0 = 11, y0 = 34, r = 9.15, start = 37*pi/180, end = 143*pi/180)) +
-                geom_arc(aes(x0 = 94, y0 = 34, r = 9.15, start = -37*pi/180, end = -143*pi/180)) +
-                geom_arc(aes(x0 = 0, y0 = 0, r = 1, start = 0, end = 90*pi/180)) +
-                geom_arc(aes(x0 = 0, y0 = 68, r = 1, start = 90*pi/180, end = 180*pi/180)) +
-                geom_arc(aes(x0 = 105, y0 = 68, r = 1, start = 180*pi/180, end = 270*pi/180)) +
-                geom_arc(aes(x0 = 105, y0 = 0, r = 1, start = 270*pi/180, end = 360*pi/180))
+                geom_point(aes(x = 11, y = 34), col = pitch_col) +
+                geom_point(aes(x = 94, y = 34), col = pitch_col) +
+                geom_point(aes(x = 52.5, y = 34), col = pitch_col) +
+                geom_arc(aes(x0 = 11, y0 = 34, r = 9.15, start = 37*pi/180, end = 143*pi/180), col = pitch_col) +
+                geom_arc(aes(x0 = 94, y0 = 34, r = 9.15, start = -37*pi/180, end = -143*pi/180), col = pitch_col) +
+                geom_arc(aes(x0 = 0, y0 = 0, r = 1, start = 0, end = 90*pi/180), col = pitch_col) +
+                geom_arc(aes(x0 = 0, y0 = 68, r = 1, start = 90*pi/180, end = 180*pi/180), col = pitch_col) +
+                geom_arc(aes(x0 = 105, y0 = 68, r = 1, start = 180*pi/180, end = 270*pi/180), col = pitch_col) +
+                geom_arc(aes(x0 = 105, y0 = 0, r = 1, start = 270*pi/180, end = 360*pi/180), col = pitch_col)
 }

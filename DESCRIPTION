@@ -13,10 +13,12 @@ Description: This packages allows you to create 2D animations of soccer tracking
     b) to searches which frames you would like to animate searching by specific event types.
 License: GPL-2
 Imports:
+  deldir,
   dplyr,
   gganimate,
   ggforce,
   ggplot2,
+  gifski,
   grDevices,
   magrittr,
   readr,
