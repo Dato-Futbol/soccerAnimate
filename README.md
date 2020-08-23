@@ -41,7 +41,7 @@ If you have another dataset to share, please let me know in order to adapt the c
 
 **soccer\_plot()** function creates a static plot of one specific and unique **frame**. It is useful to explore and pre visualize your data, aesthetic and method setting, before to create the animation (whose creation time will be longer). You are able to export this plots as PNG files.
 
-    soccer_plot(tidy_data = td, frame = 99035)
+    soccer_plot(tidy_data = td, frame = 99035, export_png = T)
 
 ![](man/plot.png)
 
