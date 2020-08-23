@@ -2,22 +2,12 @@
 % Please edit documentation in R/soccer_plot.R
 \name{soccer_plot}
 \alias{soccer_plot}
-\title{Creates a 2D plot of a unique frame from soccer tracking data}
+\title{Creates a 2D static plot}
 \usage{
-soccer_plot(
-  tidy_data,
-  frame,
-  method = "base",
-  pitch_fill = "#74a9cf",
-  pitch_lines_col = "lightgrey",
-  home_team_col = "white",
-  away_team_col = "#dd3497",
-  provider = "Metrica",
-  export_png = F,
-  png_name = "plot",
-  title = "",
-  subtitle = ""
-)
+soccer_plot(tidy_data, frame, method = "base", pitch_fill = "#74a9cf",
+  pitch_lines_col = "lightgrey", home_team_col = "white",
+  away_team_col = "#dd3497", provider = "Metrica", export_png = F,
+  png_name = "plot", title = "", subtitle = "")
 }
 \arguments{
 \item{tidy_data}{dataframe got it from get_tidy_data() function with soccer tracking data ready to animate}
@@ -48,5 +38,5 @@ soccer_plot(
 soccer plot on Plots panel and/or as output file
 }
 \description{
-Creates a 2D plot of a unique frame from soccer tracking data
+Creates a 2D static plot of a unique frame from soccer tracking data
 }

@@ -1,4 +1,6 @@
-#' Creates a 2D plot of a unique frame from soccer tracking data
+#' Creates a 2D static plot
+#'
+#' @description Creates a 2D static plot of a unique frame from soccer tracking data
 #'
 #' @param tidy_data dataframe got it from get_tidy_data() function with soccer tracking data ready to animate
 #' @param frame the unique frame of the tracking data to visualize
@@ -21,6 +23,7 @@
 #' @import ggplot2
 #' @importFrom grDevices chull
 #' @importFrom magrittr %>%
+#'
 #' @export
 #'
 soccer_plot <- function(tidy_data, frame, method = "base",

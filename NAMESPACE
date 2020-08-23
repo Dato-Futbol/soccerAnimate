@@ -2,7 +2,6 @@
 
 export(events_info)
 export(get_tidy_data)
-export(soccer_animate)
 export(soccer_plot)
 import(dplyr)
 import(gganimate)

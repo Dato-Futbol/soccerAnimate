@@ -9,7 +9,7 @@ events_info(data, events = c("SHOT", "GOAL", "FREE KICK", "CORNER KICK"))
 \arguments{
 \item{data}{event dataframe previously loaded}
 
-\item{events}{one or more events to search}
+\item{events}{one or more events to search (options: SHOT, GOAL, FREE KICK, CORNER KICK)}
 }
 \value{
 dataframe with searched events and their specific info

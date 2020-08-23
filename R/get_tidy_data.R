@@ -1,4 +1,8 @@
-#' Reads and converts both the home and away team Metrica Sport rawdata to tidy data (long format)
+#' Prepares data
+#'
+#' @description
+#' Reads and converts both the home and away team rawdata to tidy data (long format) and join them.
+#' Currently only Metrica Sport's data format is supported
 #'
 #' @param home_team_file set the filename which contains the data of the home team
 #' @param away_team_file set the filename which contains the data of the away team

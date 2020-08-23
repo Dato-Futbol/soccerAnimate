@@ -1,4 +1,6 @@
-#' Creates 2D animations using soccer tracking data
+#' Creates 2D soccer animations
+#'
+#' @description Creates 2D animations using soccer tracking data allowing you export it as gif file
 #'
 #' @param tidy_data dataframe got it from get_tidy_data() function with soccer tracking data ready to animate
 #' @param ini_time the time in seconds of tracking data to consider as initial time of the animation
@@ -25,7 +27,6 @@
 #' @import gifski
 #' @importFrom grDevices chull
 #' @importFrom magrittr %>%
-#' @export
 #'
 soccer_animate <- function(tidy_data, ini_time, end_time, method = "base",
                           pitch_fill = "#74a9cf", pitch_lines_col = "lightgrey",

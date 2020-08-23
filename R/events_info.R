@@ -1,7 +1,7 @@
 #' Searches time ocurrence and other information of specific events
 #'
 #' @param data event dataframe previously loaded
-#' @param events one or more events to search
+#' @param events one or more events to search (options: SHOT, GOAL, FREE KICK, CORNER KICK)
 #'
 #' @return dataframe with searched events and their specific info
 #' @import dplyr

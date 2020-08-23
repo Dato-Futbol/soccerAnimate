@@ -2,24 +2,13 @@
 % Please edit documentation in R/soccer_animate.R
 \name{soccer_animate}
 \alias{soccer_animate}
-\title{Creates 2D animations using soccer tracking data}
+\title{Creates 2D soccer animations}
 \usage{
-soccer_animate(
-  tidy_data,
-  ini_time,
-  end_time,
-  method = "base",
-  pitch_fill = "#74a9cf",
-  pitch_lines_col = "lightgrey",
-  home_team_col = "white",
-  away_team_col = "#dd3497",
-  title = "",
-  subtitle = "",
-  provider = "Metrica",
-  show_anim = T,
-  export_gif = F,
-  gif_name = "animation"
-)
+soccer_animate(tidy_data, ini_time, end_time, method = "base",
+  pitch_fill = "#74a9cf", pitch_lines_col = "lightgrey",
+  home_team_col = "white", away_team_col = "#dd3497", title = "",
+  subtitle = "", provider = "Metrica", show_anim = T,
+  export_gif = F, gif_name = "animation")
 }
 \arguments{
 \item{tidy_data}{dataframe got it from get_tidy_data() function with soccer tracking data ready to animate}
@@ -54,5 +43,5 @@ soccer_animate(
 animated gif on viewer and/or as output file
 }
 \description{
-Creates 2D animations using soccer tracking data
+Creates 2D animations using soccer tracking data allowing you export it as gif file
 }
