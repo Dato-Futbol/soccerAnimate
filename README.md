@@ -1,6 +1,5 @@
 
 # soccerAnimate <img src="man/soccerAnimate.png" width="160px" align="right" />
-=============
 
 An R package to create 2D animations of soccer tracking data
 
