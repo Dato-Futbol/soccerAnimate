@@ -7,18 +7,18 @@
 #' @import dplyr
 #' @importFrom magrittr %>%
 #' @importFrom stringr str_detect
+#' @importFrom janitor clean_names
 #' @export
 #'
 events_info <- function(data, events = c("SHOT", "GOAL", "FREE KICK", "CORNER KICK")){
 
         data <- data %>%
-                dplyr::mutate(Event = ifelse(Type == "SHOT" & stringr::str_detect(Subtype, '-GOAL'),
-                                                     "GOAL", ifelse(Type == "SET PIECE",  Subtype, Type)))
+                janitor::clean_names() %>%
+                dplyr::mutate(event = ifelse(type == "SHOT" & stringr::str_detect(subtype, '-GOAL'),
+                                             "GOAL", ifelse(type == "SET PIECE",  subtype, type)))
 
         data %>%
-                dplyr::filter(Event %in% events) %>%
-                dplyr::select(c(Team, Type, Subtype, Period,
-                                StartTime = "Start Time [s]", EndTime ="End Time [s]",
-                                StartFrame = "Start Frame", EndFrame = "End Frame", Event))
-                                #"From", "To", x1 = "Start X", y1 = "Start Y", x2 = "End X", y2 = "End Y"))
+                dplyr::filter(event %in% events) %>%
+                dplyr::select(c(team, type, subtype, period, start_time = start_time_s, end_time = end_time_s,
+                                start_frame, end_frame, event))
 }
