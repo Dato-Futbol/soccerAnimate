@@ -32,12 +32,12 @@ soccer_plot <- function(tidy_data, frame, method = "base",
                        provider = "Metrica", export_png= F, png_name = "plot",
                        title = "", subtitle = ""){
 
-        frames <- unique(tidy_data$Frame)
+        frames <- unique(tidy_data$frame)
 
         if(frame %in% frames){
 
                 data <- tidy_data %>%
-                        dplyr::filter(!is.nan(x) & !is.nan(y) & Frame == frame)
+                        dplyr::filter(!is.nan(x) & !is.nan(y) & frame == frame)
 
                 sp <- get_pitch(pitch_fill = pitch_fill, pitch_col = pitch_lines_col)
 
@@ -51,44 +51,44 @@ soccer_plot <- function(tidy_data, frame, method = "base",
                         if (method == "convexhull"){
 
                                 hull_data <- data %>%
-                                        dplyr::filter(Team != "Ball" & is_gk == F) %>%
-                                        dplyr::group_by(Time, Team) %>%
+                                        dplyr::filter(team != "Ball" & is_gk == F) %>%
+                                        dplyr::group_by(time, team) %>%
                                         dplyr::slice(chull(x, y))
 
                                 p <- sp +
                                         geom_polygon(data = hull_data,
-                                                     aes(x = x, y = y, fill = factor(Team)),
+                                                     aes(x = x, y = y, fill = factor(team)),
                                                      alpha=0.3, inherit.aes = T)
                         }
 
                         if (method %in% c("voronoi", "delaunay")){
 
                                 vor_data <- data %>%
-                                        dplyr::filter(Team != "Ball") %>%
+                                        dplyr::filter(team != "ball") %>%
                                         mutate(x = ifelse(x > 105, 105, ifelse(x < 0, 0, x)),
                                                y = ifelse(y > 68, 68, ifelse(y < 0, 0, y)))
 
                                 if (method == "delaunay"){
                                         p <- sp +
                                                 geom_delaunay_tile(data = vor_data,
-                                                                   mapping = aes(x = x, y = y, fill = factor(Team), group = -1L),
+                                                                   mapping = aes(x = x, y = y, fill = factor(team), group = -1L),
                                                                    colour = 'black', alpha = 0.3, bound = c(0, 105, 0, 68), inherit.aes = T)
                                 }
 
                                 if (method == "voronoi"){
                                         p <- sp +
                                                 geom_voronoi_tile(data = vor_data,
-                                                                   mapping = aes(x = x, y = y, fill = factor(Team), group = -1L),
+                                                                   mapping = aes(x = x, y = y, fill = factor(team), group = -1L),
                                                                    colour = 'black', alpha = 0.3, bound = c(0, 105, 0, 68), inherit.aes = T)
                                 }
                         }
 
                         p <- p +
                                 geom_point(data = data,
-                                           aes(x = x, y = y, fill = factor(Team), size = factor(Team)),
+                                           aes(x = x, y = y, fill = factor(team), size = factor(team)),
                                            col = "black", shape = 21, stroke = 1, alpha = 0.8,
                                            inherit.aes = T) +
-                                geom_text(data = data, aes(label = Player, x = x, y = y, col = Team),
+                                geom_text(data = data, aes(label = player, x = x, y = y, col = team),
                                           inherit.aes = T) +
                                 theme(legend.position = "none") +
                                 scale_size_manual(values = c(8,4,8)) +
@@ -109,7 +109,7 @@ soccer_plot <- function(tidy_data, frame, method = "base",
                         }
 
                 } else{
-                        message("Currently only the data format of Metrica Sport provider is supported.
+                        message("Currently only the data format of Metrica Sports provider is supported.
                                 If you have a dataset either from a different provider or with another format,
                                 please create an issue here: https://github.com/Dato-Futbol/soccerAnimate/issues")
                 }
