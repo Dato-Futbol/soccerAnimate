@@ -40,7 +40,7 @@ If you have another dataset to share, please let me know in order to adapt the c
 
 **soccer\_plot()** function creates a static plot of one specific and unique **frame**. It is useful to explore and pre visualize your data, aesthetic and method setting, before to create the animation (whose creation time will be longer). You are able to export this plots as PNG files.
 
-    soccer_plot(tidy_data = td, frame = 99035, export_png = T)
+    soccer_plot(tidy_data = td, target_frame = 99035, export_png = T)
 
 ![](man/plot.png)
 
@@ -54,12 +54,12 @@ If you have another dataset to share, please let me know in order to adapt the c
 ![](man/example_A.gif)
 
     # example B
-    soccer_animate(tidy_data = td, ini_time = 3956, end_time = 3960, method = "convexhull", title = "Convex Hull from second 3956 to 3960", subtitle = "Metrica Sport open tracking data - Game 1")
+    soccer_animate(tidy_data = td, ini_time = 3956, end_time = 3960, method = "convexhull", title = "Convex Hull from second 3956 to 3960", subtitle = "Metrica Sports open tracking data - Game 1")
 
 ![](man/example_B.gif)
 
     # example C
-    soccer_animate(tidy_data = td, ini_time = 86, end_time = 92, method = "voronoi", title = "Voronoi tesselations from second 86 to 92", subtitle = "Metrica Sport open tracking data - Game 1")
+    soccer_animate(tidy_data = td, ini_time = 86, end_time = 92, method = "voronoi", title = "Voronoi tesselations from second 86 to 92", subtitle = "Metrica Sports open tracking data - Game 1")
 
 ![](man/example_C.gif)
 
