@@ -34,7 +34,7 @@ soccer_plot <- function(tidy_data, target_frame, method = "base",
 
         frames <- unique(tidy_data$frame)
 
-        if(frame %in% frames){
+        if(target_frame %in% frames){
 
                 data <- tidy_data %>%
                         dplyr::filter(!is.nan(x) & !is.nan(y) & frame == target_frame)
