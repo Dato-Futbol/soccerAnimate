@@ -1,3 +1,3 @@
-utils::globalVariables(c(".", "Period", "Frame", "x", "y", "Player", "Time",
-                         "event_data", "Type", "Subtype", "Event",
-                         "Second", "Team", "is_gk"))
+utils::globalVariables(c(".", "period", "frame", "x", "y", "player", "time",
+                         "event_data", "type", "subtype", "event",
+                         "second", "team", "is_gk"))

@@ -14,23 +14,24 @@
 #' @importFrom magrittr %>%
 #' @importFrom tidyr pivot_longer
 #' @importFrom readr read_csv
+#' @importFrom janitor clean_names
 #' @export
 #'
 get_tidy_data <- function(home_team_file, away_team_file, provider = "Metrica", convert_coord = T) {
 
         if(provider == "Metrica"){
                 # home team
-                track_home <- suppressWarnings(read_csv(home_team_file, skip=2)) %>%
+                track_home <- suppressWarnings(read_csv(home_team_file, skip = 2)) %>%
                               janitor::clean_names()
 
                 player_names_home <- track_home %>%
-                        dplyr::select_at(dplyr::vars(starts_with("player"))) %>%
+                        dplyr::select(starts_with("player")) %>%
                         names()
 
                 track_home_long <- track_home %>%
-                        dplyr::select(-c(32, 33)) %>%
-                        dplyr::rename_at(dplyr::vars(starts_with("player")), list(~paste0(., "_px"))) %>%
-                        dplyr::rename_at(dplyr::vars(starts_with("x")), list(~paste0(player_names_home, "_py"))) %>%
+                        dplyr::select(-c(32, 33)) %>% # removing ball info
+                        dplyr::rename_with(~paste0(., "_px"), starts_with("player")) %>%
+                        dplyr::rename_with(~paste0(player_names_home, "_py"), starts_with("x")) %>%
                         tidyr::pivot_longer(cols = starts_with("player"),
                                             names_to = c("player", ".value"),
                                             names_pattern = "player(.*)_p(.)") %>%
@@ -38,17 +39,17 @@ get_tidy_data <- function(home_team_file, away_team_file, provider = "Metrica", 
                                       is_gk = ifelse(player == gsub("player", "", player_names_home[1]), T, F))
 
                 # away team
-                track_away <- suppressWarnings(read_csv(away_team_file, skip=2)) %>%
+                track_away <- suppressWarnings(read_csv(away_team_file, skip = 2)) %>%
                               janitor::clean_names()
 
                 player_names_away <- track_away %>%
-                        dplyr::select_at(dplyr::vars(starts_with("player"))) %>%
+                        dplyr::select(starts_with("player")) %>%
                         names()
 
                 track_away_long <- track_away %>%
                         dplyr::select(-c(32, 33)) %>%
-                        dplyr::rename_at(dplyr::vars(starts_with("player")), list(~paste0(., "_px"))) %>%
-                        dplyr::rename_at(dplyr::vars(starts_with("x")), list(~paste0(player_names_away, "_py"))) %>%
+                        dplyr::rename_with(~paste0(., "_px"), starts_with("player")) %>%
+                        dplyr::rename_with(~paste0(player_names_home, "_py"), starts_with("x")) %>%
                         tidyr::pivot_longer(cols = starts_with("player"),
                                             names_to = c("player", ".value"),
                                             names_pattern = "player(.*)_p(.)") %>%
