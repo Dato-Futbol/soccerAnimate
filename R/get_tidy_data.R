@@ -49,7 +49,7 @@ get_tidy_data <- function(home_team_file, away_team_file, provider = "Metrica", 
                 track_away_long <- track_away %>%
                         dplyr::select(-c(32, 33)) %>%
                         dplyr::rename_with(~paste0(., "_px"), starts_with("player")) %>%
-                        dplyr::rename_with(~paste0(player_names_home, "_py"), starts_with("x")) %>%
+                        dplyr::rename_with(~paste0(player_names_away, "_py"), starts_with("x")) %>%
                         tidyr::pivot_longer(cols = starts_with("player"),
                                             names_to = c("player", ".value"),
                                             names_pattern = "player(.*)_p(.)") %>%

@@ -26,7 +26,7 @@
 #'
 #' @export
 #'
-soccer_plot <- function(tidy_data, frame, method = "base",
+soccer_plot <- function(tidy_data, target_frame, method = "base",
                        pitch_fill = "#74a9cf", pitch_lines_col = "lightgrey",
                        home_team_col = "white", away_team_col= "#dd3497",
                        provider = "Metrica", export_png= F, png_name = "plot",
@@ -37,7 +37,7 @@ soccer_plot <- function(tidy_data, frame, method = "base",
         if(frame %in% frames){
 
                 data <- tidy_data %>%
-                        dplyr::filter(!is.nan(x) & !is.nan(y) & frame == frame)
+                        dplyr::filter(!is.nan(x) & !is.nan(y) & frame == target_frame)
 
                 sp <- get_pitch(pitch_fill = pitch_fill, pitch_col = pitch_lines_col)
 
@@ -51,7 +51,7 @@ soccer_plot <- function(tidy_data, frame, method = "base",
                         if (method == "convexhull"){
 
                                 hull_data <- data %>%
-                                        dplyr::filter(team != "Ball" & is_gk == F) %>%
+                                        dplyr::filter(team != "ball" & is_gk == F) %>%
                                         dplyr::group_by(time, team) %>%
                                         dplyr::slice(chull(x, y))
 
