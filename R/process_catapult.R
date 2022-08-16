@@ -5,6 +5,7 @@
 #'
 #' @param home_data_file set the data file path of the Home team
 #' @param away_data_file set the data file path of the Away team
+#' @param ref_pX c(LAT, LONG) coordinates for the specific field corners X
 #'
 #' @return The processed dataframe ready to do visualizations
 #' @import dplyr

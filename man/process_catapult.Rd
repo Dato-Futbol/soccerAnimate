@@ -17,6 +17,8 @@ process_catapult(
 \item{home_data_file}{set the data file path of the Home team}
 
 \item{away_data_file}{set the data file path of the Away team}
+
+\item{ref_pX}{c(LAT, LONG) coordinates for the specific field corners X}
 }
 \value{
 The processed dataframe ready to do visualizations
