@@ -4,14 +4,25 @@
 \alias{soccer_animate}
 \title{Creates 2D soccer animations}
 \usage{
-soccer_animate(tidy_data, ini_time, end_time, method = "base",
-  pitch_fill = "#74a9cf", pitch_lines_col = "lightgrey",
-  home_team_col = "white", away_team_col = "#dd3497", title = "",
-  subtitle = "", provider = "Metrica", show_anim = T,
-  export_gif = F, gif_name = "animation")
+soccer_animate(
+  tidy_data,
+  ini_time,
+  end_time,
+  method = "base",
+  pitch_fill = "#74a9cf",
+  pitch_lines_col = "lightgrey",
+  home_team_col = "white",
+  away_team_col = "#dd3497",
+  title = "",
+  subtitle = "",
+  provider = c("Metrica", "Catapult"),
+  show_anim = T,
+  export_gif = F,
+  gif_name = "animation"
+)
 }
 \arguments{
-\item{tidy_data}{dataframe got it from get_tidy_data() function with soccer tracking data ready to animate}
+\item{tidy_data}{the processed dataframe ready to do visualizations. It could be obtained using either get_tidy_data() or process_catapult() functions.}
 
 \item{ini_time}{the time in seconds of tracking data to consider as initial time of the animation}
 

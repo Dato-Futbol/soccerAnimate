@@ -4,8 +4,12 @@
 \alias{get_tidy_data}
 \title{Prepares data}
 \usage{
-get_tidy_data(home_team_file, away_team_file, provider = "Metrica",
-  convert_coord = T)
+get_tidy_data(
+  home_team_file,
+  away_team_file,
+  provider = "Metrica",
+  convert_coord = T
+)
 }
 \arguments{
 \item{home_team_file}{set the filename which contains the data of the home team}
@@ -21,5 +25,5 @@ The dataframe with all tidy data joined (long format)
 }
 \description{
 Reads and converts both the home and away team rawdata to tidy data (long format) and join them.
-Currently only Metrica Sport's data format is supported
+Currently only Metrica Sports data format is supported
 }

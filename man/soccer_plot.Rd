@@ -4,15 +4,23 @@
 \alias{soccer_plot}
 \title{Creates a 2D static plot}
 \usage{
-soccer_plot(tidy_data, frame, method = "base", pitch_fill = "#74a9cf",
-  pitch_lines_col = "lightgrey", home_team_col = "white",
-  away_team_col = "#dd3497", provider = "Metrica", export_png = F,
-  png_name = "plot", title = "", subtitle = "")
+soccer_plot(
+  tidy_data,
+  target_frame,
+  method = "base",
+  pitch_fill = "#74a9cf",
+  pitch_lines_col = "lightgrey",
+  home_team_col = "white",
+  away_team_col = "#dd3497",
+  provider = c("Metrica", "Catapult"),
+  export_png = F,
+  png_name = "plot",
+  title = "",
+  subtitle = ""
+)
 }
 \arguments{
-\item{tidy_data}{dataframe got it from get_tidy_data() function with soccer tracking data ready to animate}
-
-\item{frame}{the unique frame of the tracking data to visualize}
+\item{tidy_data}{the processed dataframe ready to do visualizations. It could be obtained using either get_tidy_data() or process_catapult() functions.}
 
 \item{method}{four different approaches to visualize: base, convexhull, voronoi, delaunay}
 
@@ -33,6 +41,8 @@ soccer_plot(tidy_data, frame, method = "base", pitch_fill = "#74a9cf",
 \item{title}{graph title}
 
 \item{subtitle}{graph subtitle}
+
+\item{frame}{the unique frame of the tracking data to visualize}
 }
 \value{
 soccer plot on Plots panel and/or as output file
