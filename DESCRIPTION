@@ -9,22 +9,25 @@ Author: person(given = "Ismael",
 Maintainer: Ismael Gómez Schmidt <ismaelgomezs@gmail.com>
 Description: This packages allows you to create 2D animations of soccer tracking data.
     In addition to that it also provides functions for complementary task like: 
-    a) to get tidy data from Metrica Sport data provider, 
+    a) to get tidy data from Metrica Sports and Catapult data providers, 
     b) to searches which frames you would like to animate searching by specific event types.
 License: GPL-2
 Imports:
   deldir,
   dplyr,
+  geosphere, 
   gganimate,
   ggforce,
   ggplot2,
   gifski,
   grDevices,
+  janitor, 
   magrittr,
+  purrr,
   readr,
   stringr,
   tidyr,
-  transformr
+  transformr  
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
