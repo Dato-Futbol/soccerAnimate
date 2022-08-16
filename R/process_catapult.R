@@ -19,8 +19,8 @@
 process_catapult <- function(home_data_file, away_data_file, ref_p1 = NULL, ref_p2 = NULL, ref_p3 = NULL, ref_p4 = NULL){
 
   options(digits = 10, digits.secs = 1)
-  home_data = read_csv(home_data_path) %>% mutate(team = 'home')
-  away_data = read_csv(away_data_path) %>% mutate(team = 'away')
+  home_data = read_csv(home_data_file) %>% mutate(team = 'home')
+  away_data = read_csv(away_data_file) %>% mutate(team = 'away')
   raw_data = bind_rows(home_data, away_data)
 
   points_long = matrix(c(ref_p1[2], ref_p2[2], ref_p1[1], ref_p2[1]), nrow = 2)
