@@ -2,7 +2,7 @@
 #'
 #' @description Creates 2D animations using soccer tracking data allowing you export it as gif file
 #'
-#' @param tidy_data dataframe got it from get_tidy_data() function with soccer tracking data ready to animate
+#' @param tidy_data the processed dataframe ready to do visualizations. It could be obtained using either get_tidy_data() or process_catapult() functions.
 #' @param ini_time the time in seconds of tracking data to consider as initial time of the animation
 #' @param end_time the time in seconds of tracking data to consider as ending time of the animation
 #' @param method four different approaches to visualize: base (default), convexhull, voronoi, delaunay
@@ -32,17 +32,28 @@
 soccer_animate <- function(tidy_data, ini_time, end_time, method = "base",
                           pitch_fill = "#74a9cf", pitch_lines_col = "lightgrey",
                           home_team_col = "white", away_team_col= "#dd3497",
-                          title = "", subtitle = "",
-                          provider = "Metrica", show_anim = T, export_gif= F, gif_name = "animation"){
+                          title = "", subtitle = "",  provider = c("Metrica", "Catapult"),
+                          show_anim = T, export_gif= F, gif_name = "animation"){
 
         if(end_time >= ini_time){
 
                 data <- tidy_data %>%
                         dplyr::filter(!is.nan(x) & !is.nan(y) & second >= ini_time & second <= end_time)
 
+                ball_data = data %>% filter(team == "ball")
+
+                if(nrow(ball_data) == 0){
+                        ball_data_temp = data %>% head(1) %>% mutate(across(everything(), ~NA)) %>%
+                                         mutate(team = "ball", x = 0, y = 0,
+                                                time = min(data$time, na.rm = T), second = min(data$second, na.rm = T))
+                        data = bind_rows(data, ball_data_temp)
+                        ball_col = "transparent"
+
+                }else{ball_col = "darkblue"}
+
                 sp <- get_pitch(pitch_fill = pitch_fill, pitch_col = pitch_lines_col)
 
-                if (provider == "Metrica"){
+                if (provider %in% c("Metrica", "Catapult")){
 
                         if (method == "base"){
 
@@ -94,8 +105,8 @@ soccer_animate <- function(tidy_data, ini_time, end_time, method = "base",
                                 transition_time(time) +
                                 theme(legend.position = "none") +
                                 scale_size_manual(values = c(8,4,8)) +
-                                scale_fill_manual(values = c(away_team_col, "darkblue", home_team_col)) +
-                                scale_colour_manual(values = c("white", "darkblue", "black"))
+                                scale_fill_manual(values = c(away_team_col, ball_col, home_team_col)) +
+                                scale_colour_manual(values = c("white", ball_col, "black"))
 
                         if (title != "" | subtitle != ""){
                                 anim <- anim +
@@ -104,9 +115,12 @@ soccer_animate <- function(tidy_data, ini_time, end_time, method = "base",
                                               plot.subtitle = element_text(colour = "black", face = "plain", size = 12, family = "Helvetica"))
                         }
 
+                        fs = case_when(provider == "Metrica" ~ 25L,
+                                       provider == "Catapult" ~ 10L)
+
                         a <- gganimate::animate(anim,
                                                 width = 900, height = 600,
-                                                nframes = length(unique(data$second))*25, fps = 25)
+                                                nframes = length(unique(data$second))*fs, fps = fs)
 
                         if (export_gif){
                                 print(a)
@@ -118,12 +132,12 @@ soccer_animate <- function(tidy_data, ini_time, end_time, method = "base",
                         }
 
                 } else{
-                        message("Currently only the data format of Metrica Sports provider is supported.
-                                If you have a dataset either from a different provider or with another format,
-                                please create an issue here: https://github.com/Dato-Futbol/soccerAnimate/issues")
+                       message("Currently only the data format of Metrica Sports provider is supported.
+                               If you have a dataset either from a different provider or with another format,
+                               please create an issue here: https://github.com/Dato-Futbol/soccerAnimate/issues")
                 }
-                } else{
-                        message("Ending time should to be either equal or higher than initial time")
-                }
+        } else{
+                message("Ending time should to be either equal or higher than initial time")
+        }
 
 }

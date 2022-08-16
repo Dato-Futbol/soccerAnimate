@@ -2,7 +2,7 @@
 #'
 #' @description
 #' Reads and converts both the home and away team rawdata to tidy data (long format) and join them.
-#' Currently only Metrica Sport's data format is supported
+#' Currently only Metrica Sports data format is supported
 #'
 #' @param home_team_file set the filename which contains the data of the home team
 #' @param away_team_file set the filename which contains the data of the away team
@@ -82,6 +82,6 @@ get_tidy_data <- function(home_team_file, away_team_file, provider = "Metrica", 
                 track_data_long
 
         }else{
-                message("Currently only the data format of Metrica Sport provider is supported")
+                message("Currently only the data format of Metrica Sports provider is supported")
         }
 }
