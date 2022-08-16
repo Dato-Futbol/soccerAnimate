@@ -2,7 +2,7 @@
 #'
 #' @description Creates a 2D static plot of a unique frame from soccer tracking data
 #'
-#' @param tidy_data dataframe got it from get_tidy_data() function with soccer tracking data ready to animate
+#' @param tidy_data the processed dataframe ready to do visualizations. It could be obtained using either get_tidy_data() or process_catapult() functions.
 #' @param frame the unique frame of the tracking data to visualize
 #' @param method four different approaches to visualize: base, convexhull, voronoi, delaunay
 #' @param pitch_fill colour used to fill the pitch
@@ -29,7 +29,7 @@
 soccer_plot <- function(tidy_data, target_frame, method = "base",
                        pitch_fill = "#74a9cf", pitch_lines_col = "lightgrey",
                        home_team_col = "white", away_team_col= "#dd3497",
-                       provider = "Metrica", export_png= F, png_name = "plot",
+                       provider = c("Metrica", "Catapult"), export_png= F, png_name = "plot",
                        title = "", subtitle = ""){
 
         frames <- unique(tidy_data$frame)
@@ -39,9 +39,15 @@ soccer_plot <- function(tidy_data, target_frame, method = "base",
                 data <- tidy_data %>%
                         dplyr::filter(!is.nan(x) & !is.nan(y) & frame == target_frame)
 
+                ball_data = data %>% filter(team == "ball")
+                if(nrow(ball_data) == 0){
+                        ball_data_temp = data %>% head(1) %>% mutate(across(everything(), ~NA)) %>% mutate(team = "ball")
+                        data = bind_rows(data, ball_data_temp)
+                }
+
                 sp <- get_pitch(pitch_fill = pitch_fill, pitch_col = pitch_lines_col)
 
-                if (provider == "Metrica"){
+                if (provider %in% c("Metrica", "Catapult")){
 
                         if (method == "base"){
 
@@ -109,7 +115,7 @@ soccer_plot <- function(tidy_data, target_frame, method = "base",
                         }
 
                 } else{
-                        message("Currently only the data format of Metrica Sports provider is supported.
+                        message("Currently only the data format of Metrica Sports and Catapult providers is supported.
                                 If you have a dataset either from a different provider or with another format,
                                 please create an issue here: https://github.com/Dato-Futbol/soccerAnimate/issues")
                 }
