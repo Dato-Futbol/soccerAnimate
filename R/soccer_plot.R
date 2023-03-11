@@ -32,6 +32,7 @@ soccer_plot <- function(tidy_data, target_frame, method = "base",
                        provider = c("Metrica", "Catapult"), export_png= F, png_name = "plot",
                        title = "", subtitle = ""){
 
+        provider = match.arg(provider)
         frames <- unique(tidy_data$frame)
 
         if(target_frame %in% frames){

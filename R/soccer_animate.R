@@ -35,6 +35,8 @@ soccer_animate <- function(tidy_data, ini_time, end_time, method = "base",
                           title = "", subtitle = "",  provider = c("Metrica", "Catapult"),
                           show_anim = T, export_gif= F, gif_name = "animation"){
 
+        provider = match.arg(provider)
+
         if(end_time >= ini_time){
 
                 data <- tidy_data %>%
