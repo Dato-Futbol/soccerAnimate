@@ -8,6 +8,8 @@ soccer_plot(
   tidy_data,
   target_frame,
   method = "base",
+  pitch_long = 105,
+  pitch_width = 68,
   pitch_fill = "#74a9cf",
   pitch_lines_col = "lightgrey",
   home_team_col = "white",
@@ -23,6 +25,10 @@ soccer_plot(
 \item{tidy_data}{the processed dataframe ready to do visualizations. It could be obtained using either get_tidy_data() or process_catapult() functions.}
 
 \item{method}{four different approaches to visualize: base, convexhull, voronoi, delaunay}
+
+\item{pitch_long}{long of the pitch in meters}
+
+\item{pitch_width}{width of the pitch in meters}
 
 \item{pitch_fill}{colour used to fill the pitch}
 

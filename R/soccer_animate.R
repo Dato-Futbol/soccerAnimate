@@ -6,6 +6,8 @@
 #' @param ini_time the time in seconds of tracking data to consider as initial time of the animation
 #' @param end_time the time in seconds of tracking data to consider as ending time of the animation
 #' @param method four different approaches to visualize: base (default), convexhull, voronoi, delaunay
+#' @param pitch_long long of the pitch in meters
+#' @param pitch_width width of the pitch in meters
 #' @param pitch_fill colour used to fill the pitch
 #' @param pitch_lines_col colour used for lines of the pitch
 #' @param home_team_col colour used to fill the players of the home team
@@ -30,10 +32,11 @@
 #' @export
 #'
 soccer_animate <- function(tidy_data, ini_time, end_time, method = "base",
-                          pitch_fill = "#74a9cf", pitch_lines_col = "lightgrey",
-                          home_team_col = "white", away_team_col= "#dd3497",
-                          title = "", subtitle = "",  provider = c("Metrica", "Catapult"),
-                          show_anim = T, export_gif= F, gif_name = "animation"){
+                           pitch_long = 105, pitch_width = 68,
+                           pitch_fill = "#74a9cf", pitch_lines_col = "lightgrey",
+                           home_team_col = "white", away_team_col= "#dd3497",
+                           title = "", subtitle = "",  provider = c("Metrica", "Catapult"),
+                           show_anim = T, export_gif= F, gif_name = "animation"){
 
         provider = match.arg(provider)
 
@@ -53,7 +56,7 @@ soccer_animate <- function(tidy_data, ini_time, end_time, method = "base",
 
                 }else{ball_col = "darkblue"}
 
-                sp <- get_pitch(pitch_fill = pitch_fill, pitch_col = pitch_lines_col)
+                sp <- get_pitch(pitch_fill, pitch_lines_col, pitch_long, pitch_width)
 
                 if (provider %in% c("Metrica", "Catapult")){
 
@@ -86,14 +89,14 @@ soccer_animate <- function(tidy_data, ini_time, end_time, method = "base",
                                         anim <- sp +
                                                 geom_delaunay_tile(data = vor_data,
                                                                    mapping = aes(x = x, y = y, fill = factor(team), group = -1L),
-                                                                   colour = 'black', alpha = 0.3, bound = c(0, 105, 0, 68), inherit.aes = T)
+                                                                   colour = 'black', alpha = 0.3, bound = c(0, pitch_long, 0, pitch_width), inherit.aes = T)
                                 }
 
                                 if (method == "voronoi"){
                                         anim <- sp +
                                                 geom_voronoi_tile(data = vor_data,
                                                                    mapping = aes(x = x, y = y, fill = factor(team), group = -1L),
-                                                                   colour = 'black', alpha = 0.3, bound = c(0, 105, 0, 68), inherit.aes = T)
+                                                                   colour = 'black', alpha = 0.3, bound = c(0, pitch_long, 0, pitch_width), inherit.aes = T)
                                 }
                         }
 

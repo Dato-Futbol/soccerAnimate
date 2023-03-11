@@ -9,6 +9,8 @@ soccer_animate(
   ini_time,
   end_time,
   method = "base",
+  pitch_long = 105,
+  pitch_width = 68,
   pitch_fill = "#74a9cf",
   pitch_lines_col = "lightgrey",
   home_team_col = "white",
@@ -29,6 +31,10 @@ soccer_animate(
 \item{end_time}{the time in seconds of tracking data to consider as ending time of the animation}
 
 \item{method}{four different approaches to visualize: base (default), convexhull, voronoi, delaunay}
+
+\item{pitch_long}{long of the pitch in meters}
+
+\item{pitch_width}{width of the pitch in meters}
 
 \item{pitch_fill}{colour used to fill the pitch}
 

@@ -5,6 +5,8 @@
 #' @param tidy_data the processed dataframe ready to do visualizations. It could be obtained using either get_tidy_data() or process_catapult() functions.
 #' @param frame the unique frame of the tracking data to visualize
 #' @param method four different approaches to visualize: base, convexhull, voronoi, delaunay
+#' @param pitch_long long of the pitch in meters
+#' @param pitch_width width of the pitch in meters
 #' @param pitch_fill colour used to fill the pitch
 #' @param pitch_lines_col colour used for lines of the pitch
 #' @param home_team_col colour used to fill the players of the home team
@@ -27,10 +29,11 @@
 #' @export
 #'
 soccer_plot <- function(tidy_data, target_frame, method = "base",
-                       pitch_fill = "#74a9cf", pitch_lines_col = "lightgrey",
-                       home_team_col = "white", away_team_col= "#dd3497",
-                       provider = c("Metrica", "Catapult"), export_png= F, png_name = "plot",
-                       title = "", subtitle = ""){
+                        pitch_long = 105, pitch_width = 68,
+                        pitch_fill = "#74a9cf", pitch_lines_col = "lightgrey",
+                        home_team_col = "white", away_team_col= "#dd3497",
+                        provider = c("Metrica", "Catapult"), export_png= F, png_name = "plot",
+                        title = "", subtitle = ""){
 
         provider = match.arg(provider)
         frames <- unique(tidy_data$frame)
@@ -46,7 +49,7 @@ soccer_plot <- function(tidy_data, target_frame, method = "base",
                         data = bind_rows(data, ball_data_temp)
                 }
 
-                sp <- get_pitch(pitch_fill = pitch_fill, pitch_col = pitch_lines_col)
+                sp <- get_pitch(pitch_fill, pitch_lines_col, pitch_long, pitch_width)
 
                 if (provider %in% c("Metrica", "Catapult")){
 
@@ -79,14 +82,14 @@ soccer_plot <- function(tidy_data, target_frame, method = "base",
                                         p <- sp +
                                                 geom_delaunay_tile(data = vor_data,
                                                                    mapping = aes(x = x, y = y, fill = factor(team), group = -1L),
-                                                                   colour = 'black', alpha = 0.3, bound = c(0, 105, 0, 68), inherit.aes = T)
+                                                                   colour = 'black', alpha = 0.3, bound = c(0, pitch_long, 0, pitch_width), inherit.aes = T)
                                 }
 
                                 if (method == "voronoi"){
                                         p <- sp +
                                                 geom_voronoi_tile(data = vor_data,
                                                                    mapping = aes(x = x, y = y, fill = factor(team), group = -1L),
-                                                                   colour = 'black', alpha = 0.3, bound = c(0, 105, 0, 68), inherit.aes = T)
+                                                                   colour = 'black', alpha = 0.3, bound = c(0, pitch_long, 0, pitch_width), inherit.aes = T)
                                 }
                         }
 
