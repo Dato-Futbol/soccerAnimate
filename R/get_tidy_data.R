@@ -8,6 +8,8 @@
 #' @param away_team_file set the filename which contains the data of the away team
 #' @param provider set the name of the tracking data provider which defines the data format
 #' @param convert_coord A boolean variable to set if the coordinates should to be converted to meters
+#' @param pitch_long long of the pitch in meters
+#' @param pitch_width width of the pitch in meters
 #'
 #' @return The dataframe with all tidy data joined (long format)
 #' @import dplyr
@@ -17,7 +19,8 @@
 #' @importFrom janitor clean_names
 #' @export
 #'
-get_tidy_data <- function(home_team_file, away_team_file, provider = "Metrica", convert_coord = T) {
+get_tidy_data <- function(home_team_file, away_team_file, provider = "Metrica",
+                          convert_coord = T, pitch_long = 105, pitch_width = 68) {
 
         if(provider == "Metrica"){
                 # home team
@@ -75,8 +78,8 @@ get_tidy_data <- function(home_team_file, away_team_file, provider = "Metrica", 
 
                 if (convert_coord){
                         track_data_long <- track_data_long %>%
-                                dplyr::mutate(y = 68 * (1 - y),
-                                              x = ifelse(period == 1, 105 * x, 105 * (1 - x)))
+                                dplyr::mutate(y = pitch_width * (1 - y),
+                                              x = ifelse(period == 1, pitch_long * x, pitch_long * (1 - x)))
                 }
 
                 track_data_long

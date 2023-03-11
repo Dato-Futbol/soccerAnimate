@@ -8,7 +8,9 @@ get_tidy_data(
   home_team_file,
   away_team_file,
   provider = "Metrica",
-  convert_coord = T
+  convert_coord = T,
+  pitch_long = 105,
+  pitch_width = 68
 )
 }
 \arguments{
@@ -19,6 +21,10 @@ get_tidy_data(
 \item{provider}{set the name of the tracking data provider which defines the data format}
 
 \item{convert_coord}{A boolean variable to set if the coordinates should to be converted to meters}
+
+\item{pitch_long}{long of the pitch in meters}
+
+\item{pitch_width}{width of the pitch in meters}
 }
 \value{
 The dataframe with all tidy data joined (long format)
