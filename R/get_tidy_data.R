@@ -31,8 +31,10 @@ get_tidy_data <- function(home_team_file, away_team_file, provider = "Metrica",
                         dplyr::select(starts_with("player")) %>%
                         names()
 
+                ball_column_home = which(str_detect("ball", names(track_home)))
+
                 track_home_long <- track_home %>%
-                        dplyr::select(-c(32, 33)) %>% # removing ball info
+                        dplyr::select(-c(ball_column_home, ball_column_home + 1)) %>% # removing ball info
                         dplyr::rename_with(~paste0(., "_px"), starts_with("player")) %>%
                         dplyr::rename_with(~paste0(player_names_home, "_py"), starts_with("x")) %>%
                         tidyr::pivot_longer(cols = starts_with("player"),
@@ -49,8 +51,10 @@ get_tidy_data <- function(home_team_file, away_team_file, provider = "Metrica",
                         dplyr::select(starts_with("player")) %>%
                         names()
 
+                ball_column_away = which(str_detect("ball", names(track_away)))
+
                 track_away_long <- track_away %>%
-                        dplyr::select(-c(32, 33)) %>%
+                        dplyr::select(-c(ball_column_away, ball_column_away + 1)) %>%
                         dplyr::rename_with(~paste0(., "_px"), starts_with("player")) %>%
                         dplyr::rename_with(~paste0(player_names_away, "_py"), starts_with("x")) %>%
                         tidyr::pivot_longer(cols = starts_with("player"),
@@ -62,7 +66,7 @@ get_tidy_data <- function(home_team_file, away_team_file, provider = "Metrica",
                 # ball
                 track_ball_long <- track_home %>%
                         dplyr::mutate(player = "", team = "ball") %>%
-                        dplyr::rename("x" = "ball", "y" = "x33") %>%
+                        dplyr::rename("x" = "ball", "y" = ball_column_home + 1) %>%
                         dplyr::mutate(is_gk = F) %>%
                         dplyr::select(names(track_home_long))
 
