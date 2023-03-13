@@ -82,7 +82,8 @@ get_tidy_data <- function(home_team_file, away_team_file, provider = "Metrica",
 
                 if (convert_coord){
                         track_data_long <- track_data_long %>%
-                                dplyr::mutate(y = pitch_width * (1 - y),
+                                dplyr::mutate(y = (1 - y),
+                                              y = ifelse(period == 1, pitch_width * y, pitch_width * (1 - y)),
                                               x = ifelse(period == 1, pitch_long * x, pitch_long * (1 - x)))
                 }
 
