@@ -32,10 +32,9 @@ soccer_plot <- function(tidy_data, target_frame, method = "base",
                         pitch_long = 105, pitch_width = 68,
                         pitch_fill = "#74a9cf", pitch_lines_col = "lightgrey",
                         home_team_col = "white", away_team_col= "#dd3497",
-                        provider = c("Metrica", "Catapult"), export_png= F, png_name = "plot",
+                        provider = "Metrica", export_png= F, png_name = "plot",
                         title = "", subtitle = ""){
 
-        provider = match.arg(provider)
         frames <- unique(tidy_data$frame)
 
         if(target_frame %in% frames){
@@ -44,6 +43,7 @@ soccer_plot <- function(tidy_data, target_frame, method = "base",
                         dplyr::filter(!is.nan(x) & !is.nan(y) & frame == target_frame)
 
                 ball_data = data %>% filter(team == "ball")
+
                 if(nrow(ball_data) == 0){
                         ball_data_temp = data %>% head(1) %>% mutate(across(everything(), ~NA)) %>% mutate(team = "ball")
                         data = bind_rows(data, ball_data_temp)
@@ -51,7 +51,7 @@ soccer_plot <- function(tidy_data, target_frame, method = "base",
 
                 sp <- get_pitch(pitch_fill, pitch_lines_col, pitch_long, pitch_width)
 
-                if (provider %in% c("Metrica", "Catapult")){
+                if (provider == "Metrica"){
 
                         if (method == "base"){
 
@@ -119,7 +119,7 @@ soccer_plot <- function(tidy_data, target_frame, method = "base",
                         }
 
                 } else{
-                        message("Currently only the data format of Metrica Sports and Catapult providers is supported.
+                        message("Currently only the data format of the Metrica Sports provider is supported.
                                 If you have a dataset either from a different provider or with another format,
                                 please create an issue here: https://github.com/Dato-Futbol/soccerAnimate/issues")
                 }

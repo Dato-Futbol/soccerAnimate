@@ -35,10 +35,8 @@ soccer_animate <- function(tidy_data, ini_time, end_time, method = "base",
                            pitch_long = 105, pitch_width = 68,
                            pitch_fill = "#74a9cf", pitch_lines_col = "lightgrey",
                            home_team_col = "white", away_team_col= "#dd3497",
-                           title = "", subtitle = "",  provider = c("Metrica", "Catapult"),
+                           title = "", subtitle = "",  provider = "Metrica",
                            show_anim = T, export_gif= F, gif_name = "animation"){
-
-        provider = match.arg(provider)
 
         if(end_time >= ini_time){
 
@@ -58,7 +56,7 @@ soccer_animate <- function(tidy_data, ini_time, end_time, method = "base",
 
                 sp <- get_pitch(pitch_fill, pitch_lines_col, pitch_long, pitch_width)
 
-                if (provider %in% c("Metrica", "Catapult")){
+                if (provider == "Metrica"){
 
                         if (method == "base"){
 
@@ -120,8 +118,7 @@ soccer_animate <- function(tidy_data, ini_time, end_time, method = "base",
                                               plot.subtitle = element_text(colour = "black", face = "plain", size = 12, family = "Helvetica"))
                         }
 
-                        fs = case_when(provider == "Metrica" ~ 25L,
-                                       provider == "Catapult" ~ 10L)
+                        fs = case_when(provider == "Metrica" ~ 25L)
 
                         a <- gganimate::animate(anim,
                                                 width = 900, height = 600,
@@ -137,7 +134,7 @@ soccer_animate <- function(tidy_data, ini_time, end_time, method = "base",
                         }
 
                 } else{
-                       message("Currently only the data format of Metrica Sports provider is supported.
+                       message("Currently only the data format of the Metrica Sports provider is supported.
                                If you have a dataset either from a different provider or with another format,
                                please create an issue here: https://github.com/Dato-Futbol/soccerAnimate/issues")
                 }
