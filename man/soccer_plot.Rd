@@ -14,7 +14,7 @@ soccer_plot(
   pitch_lines_col = "lightgrey",
   home_team_col = "white",
   away_team_col = "#dd3497",
-  provider = c("Metrica", "Catapult"),
+  provider = "Metrica",
   export_png = F,
   png_name = "plot",
   title = "",

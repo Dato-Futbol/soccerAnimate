@@ -17,7 +17,7 @@ soccer_animate(
   away_team_col = "#dd3497",
   title = "",
   subtitle = "",
-  provider = c("Metrica", "Catapult"),
+  provider = "Metrica",
   show_anim = T,
   export_gif = F,
   gif_name = "animation"
