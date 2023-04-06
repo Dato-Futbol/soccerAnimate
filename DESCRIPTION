@@ -25,6 +25,7 @@ Imports:
   magrittr,
   purrr,
   readr,
+  rlang,
   stringr,
   tidyr,
   transformr  
