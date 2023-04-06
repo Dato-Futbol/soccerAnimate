@@ -73,7 +73,6 @@ get_pitch <- function(pitch_fill = "#74a9cf", pitch_col = "lightgrey", pitch_lon
                       plot.margin = unit(c(0.3, 0.3, 0.3, 0.3), "cm")) +
                 scale_x_continuous(limits = c(-5, 110), expand = c(0, 0)) +
                 scale_y_continuous(limits = c(-5, 73), expand = c(0, 0)) +
-                #ggtitle("Soccer pitch", "with ggplot2") +
                 geom_rect(aes(xmin = 0, xmax = pitch_long, ymin = 0, ymax = pitch_width), fill = pitch_fill, col = pitch_col) +
                 geom_rect(aes(xmin = 0, xmax = 16.5, ymin = 13.85, ymax = 54.15), fill = pitch_fill, col = pitch_col) +
                 geom_rect(aes(xmin = 88.5, xmax = pitch_long, ymin = 13.85, ymax = 54.15), fill = pitch_fill, col = pitch_col) +

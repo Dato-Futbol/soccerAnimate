@@ -40,8 +40,10 @@ soccer_animate <- function(tidy_data, ini_time, end_time, method = "base",
 
         if(end_time >= ini_time){
 
-                data <- tidy_data %>%
-                        dplyr::filter(!is.nan(x) & !is.nan(y) & second >= ini_time & second <= end_time)
+                data = tidy_data %>%
+                       dplyr::filter(!is.nan(x) & !is.nan(y) & second >= ini_time & second <= end_time) %>%
+                       dplyr::mutate(vx = dx/(MS_DT*MS_LAG_SMOOTH),
+                                     vy = dy/(MS_DT*MS_LAG_SMOOTH))
 
                 ball_data = data %>% filter(team == "ball")
 
@@ -52,64 +54,72 @@ soccer_animate <- function(tidy_data, ini_time, end_time, method = "base",
                         data = bind_rows(data, ball_data_temp)
                         ball_col = "transparent"
 
-                }else{ball_col = "darkblue"}
+                } else { ball_col = "darkblue" }
 
-                sp <- get_pitch(pitch_fill, pitch_lines_col, pitch_long, pitch_width)
+                sp = get_pitch(pitch_fill, pitch_lines_col, pitch_long, pitch_width)
 
                 if (provider == "Metrica"){
 
                         if (method == "base"){
 
-                                anim <- sp
+                                anim = sp
                         }
 
                         if (method == "convexhull"){
 
-                                hull_data <- data %>%
-                                        dplyr::filter(team != "ball" & is_gk == F) %>%
-                                        dplyr::group_by(time, team) %>%
-                                        dplyr::slice(chull(x, y))
+                                hull_data = data %>%
+                                            dplyr::filter(team != "ball" & is_gk == F) %>%
+                                            dplyr::group_by(time, team) %>%
+                                            dplyr::slice(chull(x, y))
 
-                                anim <- sp +
-                                        geom_polygon(data = hull_data,
-                                                     aes(x = x, y = y, fill = factor(team)),
-                                                     alpha=0.3, inherit.aes = T)
+                                anim = sp +
+                                       geom_polygon(data = hull_data,
+                                                    aes(x = x, y = y, fill = team),
+                                                    alpha=0.3, inherit.aes = T)
                         }
 
                         if (method %in% c("voronoi", "delaunay")){
 
-                                vor_data <- data %>%
-                                        dplyr::filter(team != "ball") %>%
-                                        mutate(x = ifelse(x > 105, 105, ifelse(x < 0, 0, x)),
-                                               y = ifelse(y > 68, 68, ifelse(y < 0, 0, y)))
+                                vor_data = data %>%
+                                           dplyr::filter(team != "ball") %>%
+                                           mutate(x = ifelse(x > 105, 105, ifelse(x < 0, 0, x)),
+                                                  y = ifelse(y > 68, 68, ifelse(y < 0, 0, y)))
 
                                 if (method == "delaunay"){
-                                        anim <- sp +
-                                                geom_delaunay_tile(data = vor_data,
-                                                                   mapping = aes(x = x, y = y, fill = factor(team), group = -1L),
-                                                                   colour = 'black', alpha = 0.3, bound = c(0, pitch_long, 0, pitch_width), inherit.aes = T)
+                                        anim = sp +
+                                               geom_delaunay_tile(data = vor_data,
+                                                                  mapping = aes(x = x, y = y, fill = team, group = -1L),
+                                                                  colour = 'black', alpha = 0.3, bound = c(0, pitch_long, 0, pitch_width), inherit.aes = T)
                                 }
 
                                 if (method == "voronoi"){
-                                        anim <- sp +
-                                                geom_voronoi_tile(data = vor_data,
-                                                                   mapping = aes(x = x, y = y, fill = factor(team), group = -1L),
-                                                                   colour = 'black', alpha = 0.3, bound = c(0, pitch_long, 0, pitch_width), inherit.aes = T)
+                                        anim = sp +
+                                               geom_voronoi_tile(data = vor_data,
+                                                                 mapping = aes(x = x, y = y, fill = team, group = -1L),
+                                                                 colour = 'black', alpha = 0.3, bound = c(0, pitch_long, 0, pitch_width), inherit.aes = T)
                                 }
                         }
 
-                        anim <- anim +
-                                geom_point(data = data,
-                                           aes(x = x, y = y, fill = factor(team), size = factor(team)),
+                        anim = anim +
+                                geom_segment(data = data %>% filter(team != "ball"),
+                                             aes(x = x, y = y, xend = x + vx, yend = y + vy),
+                                             arrow = arrow(length = unit(0.005, "npc"), ends = "last"),
+                                             inherit.aes = T) +
+                                geom_point(data = data %>% filter(team != "ball"),
+                                           aes(x = x, y = y, fill = team), size = 7,
                                            col = "black", shape = 21, stroke = 1, alpha = 0.8,
                                            inherit.aes = T) +
-                                geom_text(data = data, aes(label = player, x = x, y = y, col = team),
+                                geom_text(data = data %>% filter(team != "ball"),
+                                          aes(label = player, x = x, y = y, col = team), size = 3,
                                           inherit.aes = T) +
+                                geom_point(data = data %>% filter(team == "ball"),
+                                           aes(x = x, y = y), fill = "darkblue", size = 3,
+                                           col = "black", shape = 21, stroke = 1, alpha = 0.8,
+                                           inherit.aes = T) +
                                 transition_time(time) +
                                 theme(legend.position = "none") +
-                                scale_size_manual(values = c(8,4,8)) +
-                                scale_fill_manual(values = c(away_team_col, ball_col, home_team_col)) +
-                                scale_colour_manual(values = c("white", ball_col, "black"))
+                                scale_fill_manual(values = c(away_team_col, home_team_col)) +
+                                scale_colour_manual(values = c("white", "black"))
 
                         if (title != "" | subtitle != ""){
                                 anim <- anim +
