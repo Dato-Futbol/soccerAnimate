@@ -42,8 +42,7 @@ soccer_plot <- function(tidy_data, target_frame, method = "base",
                 data = tidy_data %>%
                        dplyr::filter(!is.nan(x) & !is.nan(y) & frame == target_frame) %>%
                        mutate(vx = dx/(MS_DT*MS_LAG_SMOOTH),
-                              vy = dy/(MS_DT*MS_LAG_SMOOTH),
-                              player = gsub("_", "", player))
+                              vy = dy/(MS_DT*MS_LAG_SMOOTH))
 
                 ball_data = data %>% filter(team == "ball")
 

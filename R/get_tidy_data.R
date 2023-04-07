@@ -67,7 +67,7 @@ get_tidy_data <- function(home_team_file, away_team_file, provider = "Metrica",
 
                 }
 
-                track_data_long
+                track_data_long %>% mutate(player = gsub("_", "", player))
 
         }else{
                 message("Currently only the data format of Metrica Sports provider is supported")
