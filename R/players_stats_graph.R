@@ -2,7 +2,8 @@
 #'
 #' @param data dataframe with the players stats
 #' @param team team to graph "home" or "away"
-#' @param var variable(s) to graph
+#' @param var variable to graph, default value = "ranges" for speed ranges
+#' @param export_gif should the graph be exported as PNG file? (T/F)
 #'
 #' @return dataframe with the results
 #' @import dplyr
