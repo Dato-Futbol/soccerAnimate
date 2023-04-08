@@ -42,6 +42,7 @@ player_plot <- function(tidy_data, target_player, start_frames, end_frames = NUL
                       filter(frame %in% action_frames)
 
         sp = get_pitch(pitch_fill, pitch_lines_col, pitch_long, pitch_width)
+        player_team = unique(data_player$team)
 
         p = sp +
                 geom_point(data = data_action,
@@ -56,8 +57,16 @@ player_plot <- function(tidy_data, target_player, start_frames, end_frames = NUL
                                 size = 3, col = label_col,
                                 inherit.aes = T) +
                 theme(legend.position = "none") +
-                labs(title = paste0("Player: ", target_player, " / Action: ", action_name),
-                     subtitle = "Labels show Time [s] when actions start")
+                labs(title = paste0("Player: ", target_player, " (team: ", player_team, ") / Action: ", action_name),
+                     subtitle = "Labels show Time [s] when actions start/happen")
+
+        avg_gk_pos_x = tidy_data %>% filter(team == player_team & is_gk == T) %>% summarise(mean(x, na.rm = T)) %>% unlist(use.names = F)
+
+        if(avg_gk_pos_x > (pitch_long/2)) { dir_factor = 1L } else {dir_factor = -1L}
+
+        p = p + annotate("segment", x = pitch_long/2 + dir_factor*10, xend = pitch_long/2 - dir_factor*10, y = -3, yend = -3,
+                         arrow = arrow(type = "open", length = unit(0.1, "inches")), col = pitch_lines_col) +
+                annotate("text", x = pitch_long/2, y = -1.5, label = "Direction of play", col = pitch_lines_col)
 
         print(p)
 
