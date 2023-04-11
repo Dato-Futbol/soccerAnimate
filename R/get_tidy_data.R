@@ -7,7 +7,7 @@
 #' @param home_team_file set the filename which contains the data of the home team
 #' @param away_team_file set the filename which contains the data of the away team
 #' @param provider set the name of the tracking data provider which defines the data format
-#' @param convert_coord A boolean variable to set if the coordinates should to be converted to meters
+#' @param add_velocity A boolean variable to set if the players velocities should to be added
 #' @param pitch_long long of the pitch in meters
 #' @param pitch_width width of the pitch in meters
 #'
@@ -20,74 +20,54 @@
 #' @export
 #'
 get_tidy_data <- function(home_team_file, away_team_file, provider = "Metrica",
-                          convert_coord = T, pitch_long = 105, pitch_width = 68) {
+                          add_velocity = T, pitch_long = 105, pitch_width = 68) {
 
         if(provider == "Metrica"){
+
+                track_home = suppressWarnings(read_csv(home_team_file, skip = 2)) %>% janitor::clean_names()
+                track_away = suppressWarnings(read_csv(away_team_file, skip = 2)) %>% janitor::clean_names()
+
                 # home team
-                track_home <- suppressWarnings(read_csv(home_team_file, skip = 2)) %>%
-                              janitor::clean_names()
-
-                player_names_home <- track_home %>%
-                        dplyr::select(starts_with("player")) %>%
-                        names()
-
-                ball_column_home = which(str_detect("ball", names(track_home)))
-
-                track_home_long <- track_home %>%
-                        dplyr::select(-c(ball_column_home, ball_column_home + 1)) %>% # removing ball info
-                        dplyr::rename_with(~paste0(., "_px"), starts_with("player")) %>%
-                        dplyr::rename_with(~paste0(player_names_home, "_py"), starts_with("x")) %>%
-                        tidyr::pivot_longer(cols = starts_with("player"),
-                                            names_to = c("player", ".value"),
-                                            names_pattern = "player(.*)_p(.)") %>%
-                        dplyr::mutate(team = "home",
-                                      is_gk = ifelse(player == gsub("player", "", player_names_home[1]), T, F))
+                track_home_long = read_clean_process("home", track_home)
 
                 # away team
-                track_away <- suppressWarnings(read_csv(away_team_file, skip = 2)) %>%
-                              janitor::clean_names()
-
-                player_names_away <- track_away %>%
-                        dplyr::select(starts_with("player")) %>%
-                        names()
-
-                ball_column_away = which(str_detect("ball", names(track_away)))
-
-                track_away_long <- track_away %>%
-                        dplyr::select(-c(ball_column_away, ball_column_away + 1)) %>%
-                        dplyr::rename_with(~paste0(., "_px"), starts_with("player")) %>%
-                        dplyr::rename_with(~paste0(player_names_away, "_py"), starts_with("x")) %>%
-                        tidyr::pivot_longer(cols = starts_with("player"),
-                                            names_to = c("player", ".value"),
-                                            names_pattern = "player(.*)_p(.)") %>%
-                        dplyr::mutate(team = "away",
-                                      is_gk = ifelse(player == gsub("player", "", player_names_away[1]), T, F))
+                track_away_long = read_clean_process("away", track_away)
 
                 # ball
-                track_ball_long <- track_home %>%
-                        dplyr::mutate(player = "", team = "ball") %>%
-                        dplyr::rename("x" = "ball", "y" = ball_column_home + 1) %>%
-                        dplyr::mutate(is_gk = F) %>%
-                        dplyr::select(names(track_home_long))
-
+                track_ball_long = read_clean_process("ball", track_home)
 
                 #bind rows
-                track_data_long <- track_home_long %>%
-                        dplyr::bind_rows(track_away_long) %>%
-                        dplyr::bind_rows(track_ball_long) %>%
-                        dplyr::rename("time" = "time_s") %>%
-                        dplyr::mutate(period = as.integer(period),
-                                      frame = as.integer(frame),
-                                      second = floor(time))
+                track_data_long = track_home_long %>%
+                                  dplyr::bind_rows(track_away_long) %>%
+                                  dplyr::bind_rows(track_ball_long) %>%
+                                  dplyr::rename("time" = "time_s") %>%
+                                  dplyr::mutate(period = as.integer(period),
+                                                frame = as.integer(frame),
+                                                second = floor(time),
+                                                y = (1 - y), # invert Y axis
+                                                # convert to meters based on pitch dim + invert coordinates for period 2:
+                                                y = ifelse(period == 1, pitch_width * y, pitch_width * (1 - y)),
+                                                x = ifelse(period == 1, pitch_long * x, pitch_long * (1 - x)))
 
-                if (convert_coord){
-                        track_data_long <- track_data_long %>%
-                                dplyr::mutate(y = (1 - y),
-                                              y = ifelse(period == 1, pitch_width * y, pitch_width * (1 - y)),
-                                              x = ifelse(period == 1, pitch_long * x, pitch_long * (1 - x)))
+                if (add_velocity){
+
+                        temp = track_data_long %>%
+                               filter(!is.nan(x) & team != "ball") %>%
+                               group_by(player) %>%
+                               mutate(dx = x - lag(x, MS_LAG_SMOOTH),
+                                      dy = y - lag(y, MS_LAG_SMOOTH),
+                                      v_mod = sqrt(dx^2 + dy^2),
+                                      speed = v_mod/(MS_DT * MS_LAG_SMOOTH),
+                                      speed = ifelse(speed > PLAYER_MAX_SPEED, PLAYER_MAX_SPEED, speed))
+
+                        track_data_long = track_data_long %>%
+                                          filter(!is.nan(x) & team == "ball") %>%
+                                          mutate(dx = NA, dy =NA, v_mod = NA, speed = NA) %>%
+                                          bind_rows(temp)
+
                 }
 
-                track_data_long
+                track_data_long %>% mutate(player = gsub("_", "", player))
 
         }else{
                 message("Currently only the data format of Metrica Sports provider is supported")

@@ -3,7 +3,7 @@
 #' @description Creates a 2D static plot of a unique frame from soccer tracking data
 #'
 #' @param tidy_data the processed dataframe ready to do visualizations. It could be obtained using either get_tidy_data() or process_catapult() functions.
-#' @param frame the unique frame of the tracking data to visualize
+#' @param target_frame the unique frame of the tracking data to visualize
 #' @param method four different approaches to visualize: base, convexhull, voronoi, delaunay
 #' @param pitch_long long of the pitch in meters
 #' @param pitch_width width of the pitch in meters
@@ -25,6 +25,7 @@
 #' @import ggplot2
 #' @importFrom grDevices chull
 #' @importFrom magrittr %>%
+#' @importFrom utils head
 #'
 #' @export
 #'
@@ -39,8 +40,10 @@ soccer_plot <- function(tidy_data, target_frame, method = "base",
 
         if(target_frame %in% frames){
 
-                data <- tidy_data %>%
-                        dplyr::filter(!is.nan(x) & !is.nan(y) & frame == target_frame)
+                data = tidy_data %>%
+                       dplyr::filter(!is.nan(x) & !is.nan(y) & frame == target_frame) %>%
+                       mutate(vx = dx/(MS_DT*MS_LAG_SMOOTH),
+                              vy = dy/(MS_DT*MS_LAG_SMOOTH))
 
                 ball_data = data %>% filter(team == "ball")
 
@@ -49,67 +52,75 @@ soccer_plot <- function(tidy_data, target_frame, method = "base",
                         data = bind_rows(data, ball_data_temp)
                 }
 
-                sp <- get_pitch(pitch_fill, pitch_lines_col, pitch_long, pitch_width)
+                sp = get_pitch(pitch_fill, pitch_lines_col, pitch_long, pitch_width)
 
                 if (provider == "Metrica"){
 
                         if (method == "base"){
 
-                                p <- sp
+                                p = sp
                         }
 
                         if (method == "convexhull"){
 
-                                hull_data <- data %>%
-                                        dplyr::filter(team != "ball" & is_gk == F) %>%
-                                        dplyr::group_by(time, team) %>%
-                                        dplyr::slice(chull(x, y))
+                                hull_data = data %>%
+                                            dplyr::filter(team != "ball" & is_gk == F) %>%
+                                            dplyr::group_by(time, team) %>%
+                                            dplyr::slice(chull(x, y))
 
-                                p <- sp +
-                                        geom_polygon(data = hull_data,
-                                                     aes(x = x, y = y, fill = factor(team)),
-                                                     alpha=0.3, inherit.aes = T)
+                                p = sp +
+                                    geom_polygon(data = hull_data,
+                                                 aes(x = x, y = y, fill = team),
+                                                 alpha=0.3, inherit.aes = T)
                         }
 
                         if (method %in% c("voronoi", "delaunay")){
 
-                                vor_data <- data %>%
-                                        dplyr::filter(team != "ball") %>%
-                                        mutate(x = ifelse(x > 105, 105, ifelse(x < 0, 0, x)),
-                                               y = ifelse(y > 68, 68, ifelse(y < 0, 0, y)))
+                                vor_data = data %>%
+                                           dplyr::filter(team != "ball") %>%
+                                           mutate(x = ifelse(x > 105, 105, ifelse(x < 0, 0, x)),
+                                                  y = ifelse(y > 68, 68, ifelse(y < 0, 0, y)))
 
                                 if (method == "delaunay"){
-                                        p <- sp +
-                                                geom_delaunay_tile(data = vor_data,
-                                                                   mapping = aes(x = x, y = y, fill = factor(team), group = -1L),
-                                                                   colour = 'black', alpha = 0.3, bound = c(0, pitch_long, 0, pitch_width), inherit.aes = T)
+                                        p = sp +
+                                            geom_delaunay_tile(data = vor_data,
+                                                               mapping = aes(x = x, y = y, fill = team, group = -1L),
+                                                               colour = 'black', alpha = 0.3, bound = c(0, pitch_long, 0, pitch_width), inherit.aes = T)
                                 }
 
                                 if (method == "voronoi"){
-                                        p <- sp +
-                                                geom_voronoi_tile(data = vor_data,
-                                                                   mapping = aes(x = x, y = y, fill = factor(team), group = -1L),
-                                                                   colour = 'black', alpha = 0.3, bound = c(0, pitch_long, 0, pitch_width), inherit.aes = T)
+                                        p = sp +
+                                            geom_voronoi_tile(data = vor_data,
+                                                              mapping = aes(x = x, y = y, fill = team, group = -1L),
+                                                              colour = 'black', alpha = 0.3, bound = c(0, pitch_long, 0, pitch_width), inherit.aes = T)
                                 }
                         }
 
-                        p <- p +
-                                geom_point(data = data,
-                                           aes(x = x, y = y, fill = factor(team), size = factor(team)),
-                                           col = "black", shape = 21, stroke = 1, alpha = 0.8,
-                                           inherit.aes = T) +
-                                geom_text(data = data, aes(label = player, x = x, y = y, col = team),
-                                          inherit.aes = T) +
-                                theme(legend.position = "none") +
-                                scale_size_manual(values = c(8,4,8)) +
-                                scale_fill_manual(values = c(away_team_col, "darkblue", home_team_col)) +
-                                scale_colour_manual(values = c("white", "darkblue", "black"))
+                        fill_colors = c("home" = home_team_col, "away" = away_team_col, "ball" = "darkblue")
+
+                        p = p +
+                            geom_segment(data = data %>% dplyr::filter(team != "ball"),
+                                         aes(x = x, y = y,
+                                             xend = x + vx, yend = y + vy),
+                                         arrow = arrow(length = unit(0.005, "npc"), ends = "last"),
+                                         inherit.aes = T) +
+                            geom_point(data = data,
+                                       aes(x = x, y = y, fill = team, size = team),
+                                       col = "black", shape = 21, stroke = 1, alpha = 0.9,
+                                       inherit.aes = T) +
+                            geom_text(data = data,
+                                      aes(label = player, x = x, y = y, col = team), size = 3,
+                                      inherit.aes = T) +
+                            theme(legend.position = "none") +
+                            scale_size_manual(values = c(7, 3, 7)) +
+                            scale_fill_manual(values = fill_colors) +
+                            scale_colour_manual(values = c("white", "darkblue", "black"))
 
                         if (title != "" | subtitle != ""){
-                                p <- p +
-                                        labs(title = title, subtitle = subtitle) +
-                                        theme(plot.title = element_text(colour = "black", face = "bold", size = 14),
-                                              plot.subtitle = element_text(colour = "black", face = "plain", size = 12))
+                                p = p +
+                                    labs(title = title, subtitle = subtitle) +
+                                    theme(plot.title = element_text(colour = "black", face = "bold", size = 14),
+                                          plot.subtitle = element_text(colour = "black", face = "plain", size = 12))
                         }
 
                         print(p)

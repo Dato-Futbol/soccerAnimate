@@ -8,7 +8,7 @@ get_tidy_data(
   home_team_file,
   away_team_file,
   provider = "Metrica",
-  convert_coord = T,
+  add_velocity = T,
   pitch_long = 105,
   pitch_width = 68
 )
@@ -20,7 +20,7 @@ get_tidy_data(
 
 \item{provider}{set the name of the tracking data provider which defines the data format}
 
-\item{convert_coord}{A boolean variable to set if the coordinates should to be converted to meters}
+\item{add_velocity}{A boolean variable to set if the players velocities should to be added}
 
 \item{pitch_long}{long of the pitch in meters}
 

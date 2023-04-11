@@ -3,15 +3,17 @@
 #' @description Creates 2D animations using soccer tracking data allowing you export it as gif file
 #'
 #' @param tidy_data the processed dataframe ready to do visualizations. It could be obtained using either get_tidy_data() or process_catapult() functions.
-#' @param ini_time the time in seconds of tracking data to consider as initial time of the animation
-#' @param end_time the time in seconds of tracking data to consider as ending time of the animation
+#' @param target_player player whose actions will be highlighted
+#' @param ini_frame the frame to consider as the initial point for the animation
+#' @param end_frame the frame to consider as the ending point for the animation
+#' @param player_col color to highlight the target player actions
 #' @param method four different approaches to visualize: base (default), convexhull, voronoi, delaunay
 #' @param pitch_long long of the pitch in meters
 #' @param pitch_width width of the pitch in meters
-#' @param pitch_fill colour used to fill the pitch
-#' @param pitch_lines_col colour used for lines of the pitch
-#' @param home_team_col colour used to fill the players of the home team
-#' @param away_team_col colour used to fill the players of the away team
+#' @param pitch_fill color used to fill the pitch
+#' @param pitch_lines_col color used for lines of the pitch
+#' @param home_team_col color used to fill the players of the home team
+#' @param away_team_col color used to fill the players of the away team
 #' @param title graph title
 #' @param subtitle graph subtitle
 #' @param provider set the name of the tracking data provider which defines the data format
@@ -31,17 +33,18 @@
 #' @importFrom magrittr %>%
 #' @export
 #'
-soccer_animate <- function(tidy_data, ini_time, end_time, method = "base",
+player_animate <- function(tidy_data, target_player, ini_frame, end_frame,
+                           player_col = "#ffc300", method = "base",
                            pitch_long = 105, pitch_width = 68,
                            pitch_fill = "#74a9cf", pitch_lines_col = "lightgrey",
                            home_team_col = "white", away_team_col= "#dd3497",
                            title = "", subtitle = "",  provider = "Metrica",
                            show_anim = T, export_gif= F, gif_name = "animation"){
 
-        if(end_time >= ini_time){
+        if(end_frame > ini_frame){
 
                 data = tidy_data %>%
-                       dplyr::filter(!is.nan(x) & !is.nan(y) & second >= ini_time & second <= end_time) %>%
+                       dplyr::filter(!is.nan(x) & !is.nan(y) & frame >= ini_frame & frame <= end_frame) %>%
                        dplyr::mutate(vx = dx/(MS_DT*MS_LAG_SMOOTH),
                                      vy = dy/(MS_DT*MS_LAG_SMOOTH))
 
@@ -57,6 +60,7 @@ soccer_animate <- function(tidy_data, ini_time, end_time, method = "base",
                 } else { ball_col = "darkblue" }
 
                 sp = get_pitch(pitch_fill, pitch_lines_col, pitch_long, pitch_width)
+
 
                 if (provider == "Metrica"){
 
@@ -101,7 +105,10 @@ soccer_animate <- function(tidy_data, ini_time, end_time, method = "base",
                         }
 
                         anim = anim +
-                                geom_segment(data = data %>% filter(team != "ball"),
+                               geom_point(data = data %>% filter(player == target_player) %>% select(-time),
+                                          aes(x = x, y = y), col = player_col, size = 1,
+                                          alpha = 0.8, inherit.aes = T) +
+                               geom_segment(data = data %>% filter(team != "ball"),
                                              aes(x = x, y = y, xend = x + vx, yend = y + vy),
                                              arrow = arrow(length = unit(0.005, "npc"), ends = "last"),
                                              inherit.aes = T) +
@@ -149,7 +156,7 @@ soccer_animate <- function(tidy_data, ini_time, end_time, method = "base",
                                please create an issue here: https://github.com/Dato-Futbol/soccerAnimate/issues")
                 }
         } else{
-                message("Ending time should to be either equal or higher than initial time")
+                message("Ending frame should to be higher than initial frame")
         }
 
 }
