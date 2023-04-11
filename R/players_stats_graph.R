@@ -3,13 +3,13 @@
 #' @param data dataframe with the players stats
 #' @param team team to graph "home" or "away"
 #' @param var variable to graph, default value = "ranges" for speed ranges
-#' @param export_gif should the graph be exported as PNG file? (T/F)
+#' @param export_png should the graph be exported as PNG file? (T/F)
 #'
 #' @return dataframe with the results
 #' @import dplyr
 #' @import ggplot2
 #' @importFrom magrittr %>%
-#' @importFrom frocats fct_reorder
+#' @importFrom forcats fct_reorder
 #' @export
 #'
 players_stats_graph <- function(data, team = c("home", "away"), var = "ranges", export_png = F){

@@ -8,10 +8,11 @@
 #' @param end_frames vector with the selected frames focused on when specific actions end
 #' @param pitch_long long of the pitch in meters
 #' @param pitch_width width of the pitch in meters
-#' @param pitch_fill colour used to fill the pitch
-#' @param pitch_lines_col colour used for lines of the pitch
-#' @param action_col colour used for the frames marking related to a specific action
-#' @param label_col colour used for labels showing the Time when actions start
+#' @param pitch_fill color used to fill the pitch
+#' @param pitch_lines_col color used for lines of the pitch
+#' @param action_name action name(s) to be highlighted
+#' @param action_col color used for the frames marking related to a specific action
+#' @param label_col color used for labels showing the Time when actions start
 #' @param export_png should the plot be exported as png file? (T/F)
 #'
 #' @return plot with the selected frames of a player on Plots panel and/or as png output file

@@ -6,6 +6,7 @@
 #' @return dataframe with the results
 #' @import dplyr
 #' @importFrom magrittr %>%
+#' @importFrom stats convolve
 #' @export
 #'
 sprints_info <- function(data, team = c("home", "away")){

@@ -7,18 +7,17 @@ Author: person(given = "Ismael",
          role = c("aut", "cre"),
          email = "ismaelgomezs@gmail.com")
 Maintainer: Ismael Gómez Schmidt <ismaelgomezs@gmail.com>
-Description: This packages allows you to create 2D animations of soccer tracking data.
-    In addition to that it also provides functions for complementary task like: 
-    a) to get tidy data from Metrica Sports and Catapult data providers, 
-    b) to searches which frames you would like to animate searching by specific event types.
+Description: This packages allows you to create 2D animations of soccer tracking data in addition to do some player calculations.
 License: GPL-2
 Imports:
   deldir,
   dplyr,
+  forcats,
   geosphere, 
   gganimate,
   ggforce,
   ggplot2,
+  ggrepel,
   gifski,
   grDevices,
   janitor, 

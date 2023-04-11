@@ -3,7 +3,7 @@
 #' @description Creates a 2D static plot of a unique frame from soccer tracking data
 #'
 #' @param tidy_data the processed dataframe ready to do visualizations. It could be obtained using either get_tidy_data() or process_catapult() functions.
-#' @param frame the unique frame of the tracking data to visualize
+#' @param target_frame the unique frame of the tracking data to visualize
 #' @param method four different approaches to visualize: base, convexhull, voronoi, delaunay
 #' @param pitch_long long of the pitch in meters
 #' @param pitch_width width of the pitch in meters
@@ -25,6 +25,7 @@
 #' @import ggplot2
 #' @importFrom grDevices chull
 #' @importFrom magrittr %>%
+#' @importFrom utils head
 #'
 #' @export
 #'

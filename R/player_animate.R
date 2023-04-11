@@ -3,15 +3,17 @@
 #' @description Creates 2D animations using soccer tracking data allowing you export it as gif file
 #'
 #' @param tidy_data the processed dataframe ready to do visualizations. It could be obtained using either get_tidy_data() or process_catapult() functions.
-#' @param ini_time the time in seconds of tracking data to consider as initial time of the animation
-#' @param end_time the time in seconds of tracking data to consider as ending time of the animation
+#' @param target_player player whose actions will be highlighted
+#' @param ini_frame the frame to consider as the initial point for the animation
+#' @param end_frame the frame to consider as the ending point for the animation
+#' @param player_col color to highlight the target player actions
 #' @param method four different approaches to visualize: base (default), convexhull, voronoi, delaunay
 #' @param pitch_long long of the pitch in meters
 #' @param pitch_width width of the pitch in meters
-#' @param pitch_fill colour used to fill the pitch
-#' @param pitch_lines_col colour used for lines of the pitch
-#' @param home_team_col colour used to fill the players of the home team
-#' @param away_team_col colour used to fill the players of the away team
+#' @param pitch_fill color used to fill the pitch
+#' @param pitch_lines_col color used for lines of the pitch
+#' @param home_team_col color used to fill the players of the home team
+#' @param away_team_col color used to fill the players of the away team
 #' @param title graph title
 #' @param subtitle graph subtitle
 #' @param provider set the name of the tracking data provider which defines the data format

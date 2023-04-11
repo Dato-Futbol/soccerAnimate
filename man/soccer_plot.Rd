@@ -24,6 +24,8 @@ soccer_plot(
 \arguments{
 \item{tidy_data}{the processed dataframe ready to do visualizations. It could be obtained using either get_tidy_data() or process_catapult() functions.}
 
+\item{target_frame}{the unique frame of the tracking data to visualize}
+
 \item{method}{four different approaches to visualize: base, convexhull, voronoi, delaunay}
 
 \item{pitch_long}{long of the pitch in meters}
@@ -47,8 +49,6 @@ soccer_plot(
 \item{title}{graph title}
 
 \item{subtitle}{graph subtitle}
-
-\item{frame}{the unique frame of the tracking data to visualize}
 }
 \value{
 soccer plot on Plots panel and/or as output file
