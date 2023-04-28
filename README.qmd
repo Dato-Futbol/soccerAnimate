@@ -15,7 +15,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-# soccerAnimate
 An R package to create 2D animations of soccer tracking data
 
 ## How to install it?
@@ -53,8 +52,6 @@ The following additions were added for the last version of the package (1.0.0 at
 
   - Pitch dimension could be customized
   
-  - 
-
 
 ## How to use it?
 
