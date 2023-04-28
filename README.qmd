@@ -1,19 +1,8 @@
 ---
 title: '{soccerAnimate}'
-format: 
-  gfm:
-    preview-mode: html
+
 ---
 
-
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/",
-  out.width = "100%"
-)
-```
 
 An R package to create 2D animations of soccer tracking data
 
@@ -57,23 +46,7 @@ The following additions were added for the last version of the package (1.0.0 at
 
 The package already has multiple functions to use, so it is usefulness to think about of them like a workflow for a either players or team level, as the following diagram shows:
 
-
-```{mermaid}
-flowchart LR
-  A(("get_tidy_data()")) --> B("events_info()")
-  
-  B == "Team level" ==> F["soccer_plot()"]
-  F --> G["soccer_animate()"]
-  
-  A == "Player level" ==> C("sprints_info()")
-  B --> H("sprints_info()")
-  
-  A == "Player level" ==> D["players_stats()"]
-  D --> E["players_stats_graph()"]
-  C --> H["player_plot()"]
-  H --> I["player_animate()"]
-
-```
+![](README_files/figure-commonmark/mermaid-figure-1.png){fig-align="center" width=80%}
 
 
 The functions allows you to do the following tasks:
