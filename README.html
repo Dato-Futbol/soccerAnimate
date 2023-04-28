@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.333">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>{soccerAnimate}</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="README_files/libs/clipboard/clipboard.min.js"></script>
+<script src="README_files/libs/quarto-html/quarto.js"></script>
+<script src="README_files/libs/quarto-html/popper.min.js"></script>
+<script src="README_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="README_files/libs/quarto-html/anchor.min.js"></script>
+<link href="README_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="README_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="README_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="README_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="README_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">{soccerAnimate}</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>An R package to create 2D animations of soccer tracking data</p>
+<section id="how-to-install-it" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-install-it">How to install it?</h2>
+<pre><code># install.packages("remotes")
+remotes::install_github("Dato-Futbol/soccerAnimate")</code></pre>
+<p>In case you have a previous version and you would like to update the package, don’t forget to add the argument <code>force = T</code></p>
+</section>
+<section id="news" class="level2">
+<h2 class="anchored" data-anchor-id="news">News</h2>
+<p>The following additions were added for the last version of the package (1.0.0 at April 28th, 2023)</p>
+<ul>
+<li><p>Player stats calculations:</p>
+<ul>
+<li><p>Minutes played and avg. speed</p></li>
+<li><p>Instant velocity per sample (magnitude and direction) which allow to calculate some game level stats and to show this info on the visualizations</p></li>
+<li><p>Total distances over the game and for different velocity ranges (you are able to choose between 2 kind of ranges)</p></li>
+<li><p>Number of sprints made by each player</p></li>
+</ul></li>
+<li><p>Player visualizations:</p>
+<ul>
+<li><p>A plot showing where a specific player made a specific action (e.g.&nbsp;sprints)</p></li>
+<li><p>Animation highlighting the player path on a specific time range</p></li>
+</ul></li>
+<li><p>General:</p>
+<ul>
+<li>Pitch dimension could be customized</li>
+</ul></li>
+</ul>
+</section>
+<section id="how-to-use-it" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-use-it">How to use it?</h2>
+<p>The package already has multiple functions to use, so it is usefulness to think about of them like a workflow for a either players or team level, as the following diagram shows:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="README_files/figure-commonmark/mermaid-figure-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p>The functions allows you to do the following tasks:</p>
+<section id="to-get-and-process-the-tracking-data" class="level3">
+<h3 class="anchored" data-anchor-id="to-get-and-process-the-tracking-data">1) To get and process the tracking data</h3>
+<p>The function <strong>get_tidy_data()</strong> reads, tidies and joins the rawdata of both the Home and Away teams.</p>
+<p>Currently only data from the provider Metrica Sports is supported. Even though you can download the open tracking/event data following <a href="https://github.com/metrica-sports/sample-data">this link</a>, it is also possible to get the processed data directly using the function <em>get_tidy_data()</em> with the URLs of rawdata like the following example for the Game #2:</p>
+<pre><code>library(soccerAnimate)
+home_team_file &lt;- "https://raw.githubusercontent.com/metrica-sports/sample-data/master/data/Sample_Game_2/Sample_Game_2_RawTrackingData_Home_Team.csv"
+away_team_file &lt;- "https://raw.githubusercontent.com/metrica-sports/sample-data/master/data/Sample_Game_2/Sample_Game_2_RawTrackingData_Away_Team.csv"
+td &lt;- get_tidy_data(home_team_file, away_team_file)</code></pre>
+<p>If you have another data provider or format, contact me in order to explore how can I help you adapting the code. I also could provide you some professional services related, even if you have tracking data from GPS devices. Check <a href="https://www.datofutbol.cl/services/tracking-data-applications/">this link</a> for more details.</p>
+</section>
+<section id="to-get-events-information" class="level3">
+<h3 class="anchored" data-anchor-id="to-get-events-information">2) To get events information</h3>
+<p>The function <strong>events_info()</strong> gets events information from the eventing dataset (Period, Team, Event, start and end time, start and end frame, etc.). You could get info for either shots, goals, free kicks or corner kicks. One of the current main usefulness of this is to know at which times/frames specific events occurs, then you will create both static plots and animations for those times/frames.</p>
+<pre><code>ed &lt;- readr::read_csv("https://raw.githubusercontent.com/metrica-sports/sample-data/master/data/Sample_Game_2/Sample_Game_2_RawEventsData.csv")
+goals &lt;- events_info(ed, events = "GOAL")
+
+# all_events &lt;- events_info(ed, events = c("SHOT", "GOAL", "FREE KICK", "CORNER KICK"))</code></pre>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="man/goals_info.png" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+</section>
+</section>
+<section id="team-level" class="level2">
+<h2 class="anchored" data-anchor-id="team-level">Team level</h2>
+<section id="to-create-a-2d-static-plot" class="level3">
+<h3 class="anchored" data-anchor-id="to-create-a-2d-static-plot">3) To create a 2D static plot</h3>
+<p>The function <strong>soccer_plot()</strong> creates a static plot of one specific and unique <strong>frame</strong>. It is useful to explore and pre visualize your data, aesthetic and method setting, before to create the animation (whose creation time will be longer). You are able to export this plots as PNG files.</p>
+<pre><code>soccer_plot(tidy_data = td, target_frame = 12212, export_png = T)</code></pre>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="man/plot.png" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+</section>
+<section id="to-create-a-2d-soccer-animation" class="level3">
+<h3 class="anchored" data-anchor-id="to-create-a-2d-soccer-animation">4) To create a 2D soccer animation</h3>
+<p>The function <strong>soccer_animate()</strong> creates 2D soccer animations using tracking data. You are able to set multiple arguments besides tidy tracking data, like the starting and the ending time to animate (in seconds, no frames!), geometric or spatial analysis method (options: “base”, “convexhull”, “voronoi”, “delaunay”), aesthetics setting (colors of pitch fill and lines, teams colors, titles, etc.), and some output settings. Most of this arguments are enabled also for <strong>soccer_plot()</strong> function.</p>
+<pre><code># Example A: "base"
+soccer_animate(td, 480, 490, "base", export_gif = T)</code></pre>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="man/base.gif" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<pre><code># Example B "convexhull"
+soccer_animate(td, 480, 490, "convexhull", export_gif = T, gif_name = "convexhull.gif")</code></pre>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="man/convexhull.gif" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<pre><code># Example C: "voronoi"
+soccer_animate(td, 2112, 2122, "voronoi", export_gif = T, gif_name = "voronoi.gif")</code></pre>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="man/voronoi.gif" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+</section>
+</section>
+<section id="player-level" class="level2">
+<h2 class="anchored" data-anchor-id="player-level">Player level</h2>
+<section id="player-stats-calculation-and-visualization" class="level3">
+<h3 class="anchored" data-anchor-id="player-stats-calculation-and-visualization">4) Player stats calculation and visualization:</h3>
+<p>With the function <strong>players_stats()</strong> you calculate for every player the minutes played, avg. speed, total distance and distance for different speed ranges.</p>
+<p>Then you are able to visualize those stats with the function <strong>players_stats_graph()</strong> (Home team by default):</p>
+<pre><code>player_stats = players_stats(td)
+players_stats_graph(player_stats, export_png = T)
+</code></pre>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="man/players_stats.png" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="man/players_graph.png" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+</section>
+<section id="to-get-players-sprints-information" class="level3">
+<h3 class="anchored" data-anchor-id="to-get-players-sprints-information">5) To get players sprints information:</h3>
+<p>With the function <strong>sprints_info()</strong> you apply the needed data processing to get the number of sprints that every player for a chosen team (Home team by default) made. A sprint is considered when a player run a very high speed (higher than 7 [m/s]) for at least 1 second.</p>
+<p>With this information you can observe a player ranking based on the number of sprints:</p>
+<pre><code>sprints = sprints_info(td)
+
+library(dplyr)
+player_sprints = sprints %&gt;% 
+                 summarise(n_sprint = sum(start)) %&gt;% 
+                 arrange(desc(n_sprint))
+</code></pre>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="man/players_sprints.png" class="img-fluid figure-img" style="width:25.0%"></p>
+</figure>
+</div>
+</section>
+<section id="to-create-a-player-plot-with-specific-actions" class="level3">
+<h3 class="anchored" data-anchor-id="to-create-a-player-plot-with-specific-actions">6) To create a player plot with specific actions:</h3>
+<p>With the function <strong>player_plot()</strong> you can create a plot showing where and when (labels show Time[s]) specific actions made by a player happened.</p>
+<p>For example, the sprints made by the player 10 of the Home team:</p>
+<pre><code>player10_starts = sprints %&gt;% filter(player == 10 &amp; start == 1)
+player10_ends = sprints %&gt;% filter(player == 10 &amp; end == 1)
+
+player_plot(td, 10, player10_starts$n, player10_ends$n, export_png = T)
+</code></pre>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="man/sprints_player_10.png" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+</section>
+<section id="to-create-a-player-animation-highlighting" class="level3">
+<h3 class="anchored" data-anchor-id="to-create-a-player-animation-highlighting">7) To create a player animation highlighting :</h3>
+<p>With the function <strong>player_animate()</strong> you are able to create a 2D animation for the specific time range when one specific player sprint happened.</p>
+<pre><code>player_animate(td, 10, player10_starts$n[1], player10_ends$n[1], export_gif = T)
+</code></pre>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="man/player_10_sprint_1.gif" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+</section>
+</section>
+<section id="general-considerations" class="level2">
+<h2 class="anchored" data-anchor-id="general-considerations">General considerations</h2>
+<ul>
+<li>A soccer pitch of dimensions 105x68 meters was considered by default.</li>
+<li>Reverted coordinates for Period 2: Teams are always attacking in the same direction.</li>
+</ul>
+</section>
+<section id="currently-working-on" class="level2">
+<h2 class="anchored" data-anchor-id="currently-working-on">Currently working on:</h2>
+<ul>
+<li>Team positioning splitting by ON/OFF ball possession</li>
+</ul>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
