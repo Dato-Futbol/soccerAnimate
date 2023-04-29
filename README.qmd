@@ -1,6 +1,8 @@
 ---
 title: '{soccerAnimate}'
-
+format: 
+  gfm:
+    preview-mode: html
 ---
 
 
@@ -46,7 +48,7 @@ The following additions were added for the last version of the package (1.0.0 at
 
 The package already has multiple functions to use, so it is usefulness to think about of them like a workflow for a either players or team level, as the following diagram shows:
 
-![](README_files/figure-commonmark/mermaid-figure-1.png){fig-align="center" width=80%}
+![](man/mermaid-figure-1.png)
 
 
 The functions allows you to do the following tasks:
