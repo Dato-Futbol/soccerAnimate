@@ -45,7 +45,8 @@ The package already has multiple functions to use, so it is usefulness
 to think about of them like a workflow for a either players or team
 level, as the following diagram shows:
 
-![](man/mermaid-figure-1.png)
+<img src="man/mermaid-figure-1.png" style="width:80.0%"
+data-fig-align="center" />
 
 The functions allows you to do the following tasks:
 
