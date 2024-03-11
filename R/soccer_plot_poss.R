@@ -4,7 +4,7 @@
 #'
 #' @param tidy_data the processed dataframe ready to do visualizations. It could be obtained using either get_tidy_data() or process_catapult() functions.
 #' @param events_path path where the CSV file with eventing data is located
-#' @param team
+#' @param team target team
 #' @param pitch_long long of the pitch in meters
 #' @param pitch_width width of the pitch in meters
 #' @param pitch_fill colour used to fill the pitch
@@ -36,10 +36,9 @@ soccer_plot_poss <- function(tidy_data, events_path, team = c("Home", "Away"),
                              export_png = F, png_name = "plot", annotation = "NA"){
 
         target_team = match.arg(team)
-        opp_team = setdiff(unique(ed$Team), target_team)
 
         ed = readr::read_csv(events_path) %>% dplyr::filter(!Type %in% c("CHALLENGE", "CARD"))
-
+        opp_team = setdiff(unique(ed$Team), target_team)
 
         # target team graph
         p1 = get_poss_graph(tidy_data, ed, target_team, target_team_col, on_ball_col, off_ball_col,

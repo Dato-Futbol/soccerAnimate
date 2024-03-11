@@ -26,6 +26,8 @@ soccer_plot_poss(
 
 \item{events_path}{path where the CSV file with eventing data is located}
 
+\item{team}{target team}
+
 \item{pitch_long}{long of the pitch in meters}
 
 \item{pitch_width}{width of the pitch in meters}
