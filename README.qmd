@@ -17,9 +17,24 @@ remotes::install_github("Dato-Futbol/soccerAnimate")
 In case you have a previous version and you would like to update the package, don't forget to add the argument `force = T`
 
 
-## News
+## Changelog
 
-The following additions were added for the last version of the package (1.0.0 at April 28th, 2023)
+The following additions were added for the last version of the package (*v1.1 at March 11th, 2024*)
+
+* Visualization for team avg. positioning comparing ON/OFF ball possession
+
+* Avg. positioning team stats: 
+
+        - Last defender X pos. [m]
+        - Highest forward X pos. [m]
+        - Depth [m]
+        - Amplitude [m]
+        - Area [m2]
+        - Centroid X,Y
+        - Spread
+ 
+
+#### v1.0 (April 28th, 2023)
 
 * Player stats calculations: 
 
@@ -76,7 +91,8 @@ I also could provide you some professional services related, even if you have tr
 The function **events_info()** gets events information from the eventing dataset (Period, Team, Event, start and end time, start and end frame, etc.). You could get info for either shots, goals, free kicks or corner kicks. One of the current main usefulness of this is to know at which times/frames specific events occurs, then you will create both static plots and animations for those times/frames.
 
 ```
-ed <- readr::read_csv("https://raw.githubusercontent.com/metrica-sports/sample-data/master/data/Sample_Game_2/Sample_Game_2_RawEventsData.csv")
+event_path = "https://raw.githubusercontent.com/metrica-sports/sample-data/master/data/Sample_Game_2/Sample_Game_2_RawEventsData.csv"
+ed <- readr::read_csv(event_path)
 goals <- events_info(ed, events = "GOAL")
 
 # all_events <- events_info(ed, events = c("SHOT", "GOAL", "FREE KICK", "CORNER KICK"))
@@ -123,9 +139,21 @@ soccer_animate(td, 2112, 2122, "voronoi", export_gif = T, gif_name = "voronoi.gi
 
 ![](man/voronoi.gif){fig-align="center" width=80%}
 
+### 4) Team avg. postitioning and stats by ON/OFF ball possession states
+
+With the function **soccer_plot_poss()** you can create a plot showing for each team the avg. position of players, its convex hull and position stats.
+
+```
+soccer_plot_poss(td, event_path, team = "Away", pitch_fill = "grey40",
+                 on_ball_col = "white", off_ball_col = "#74a9cf")
+```
+
+![](man/avg_pos_stats.png){fig-align="center" width=80%}
+
+
 ## Player level
 
-### 4) Player stats calculation and visualization:
+### 5) Player stats calculation and visualization:
 
 With the function **players_stats()** you calculate for every player the minutes played, avg. speed, total distance and distance for different speed ranges. 
 
@@ -140,7 +168,7 @@ players_stats_graph(player_stats, export_png = T)
 
 ![](man/players_graph.png){fig-align="center" width=80%}
 
-### 5) To get players sprints information:
+### 6) To get players sprints information:
 
 With the function **sprints_info()** you apply the needed data processing to get the number of sprints that every player for a chosen team (Home team by default) made. A sprint is considered when a player run a very high speed (higher than 7 [m/s]) for at least 1 second.
 
@@ -157,7 +185,7 @@ player_sprints = sprints %>%
 ```
 ![](man/players_sprints.png){fig-align="center" width=25%}
 
-### 6) To create a player plot with specific actions:
+### 7) To create a player plot with specific actions:
 
 With the function **player_plot()** you can create a plot showing where and when (labels show Time[s]) specific actions made by a player happened.
 
@@ -172,7 +200,7 @@ player_plot(td, 10, player10_starts$n, player10_ends$n, export_png = T)
 ```
 ![](man/sprints_player_10.png){fig-align="center" width=80%}
 
-### 7) To create a player animation highlighting :
+### 8) To create a player animation highlighting :
 
 With the function **player_animate()** you are able to create a 2D animation for the specific time range when one specific player sprint happened.
 
@@ -188,10 +216,16 @@ player_animate(td, 10, player10_starts$n[1], player10_ends$n[1], export_gif = T)
 
 * A soccer pitch of dimensions 105x68 meters was considered by default.
 * Reverted coordinates for Period 2: Teams are always attacking in the same direction.
+* Avg. positioning viz and stats consider the 11 players who played the highest amount of minutes
 
 
 ## Currently working on:
 
-- Team positioning splitting by ON/OFF ball possession
+- target team ON possession vs opponent team OFF possession
 
+- split stats and positioning by context: score, venue, game state, etc.
+
+- add specific metric text annotations
+
+- additional data providers
 

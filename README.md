@@ -10,10 +10,25 @@ An R package to create 2D animations of soccer tracking data
 In case you have a previous version and you would like to update the
 package, don’t forget to add the argument `force = T`
 
-## News
+## Changelog
 
 The following additions were added for the last version of the package
-(1.0.0 at April 28th, 2023)
+(*v1.1 at March 11th, 2024*)
+
+- Visualization for team avg. positioning comparing ON/OFF ball
+  possession
+
+- Avg. positioning team stats:
+
+        - Last defender X pos. [m]
+        - Highest forward X pos. [m]
+        - Depth [m]
+        - Amplitude [m]
+        - Area [m2]
+        - Centroid X,Y
+        - Spread
+
+#### v1.0 (April 28th, 2023)
 
 - Player stats calculations:
 
@@ -83,7 +98,8 @@ kicks. One of the current main usefulness of this is to know at which
 times/frames specific events occurs, then you will create both static
 plots and animations for those times/frames.
 
-    ed <- readr::read_csv("https://raw.githubusercontent.com/metrica-sports/sample-data/master/data/Sample_Game_2/Sample_Game_2_RawEventsData.csv")
+    event_path = "https://raw.githubusercontent.com/metrica-sports/sample-data/master/data/Sample_Game_2/Sample_Game_2_RawEventsData.csv"
+    ed <- readr::read_csv(event_path)
     goals <- events_info(ed, events = "GOAL")
 
     # all_events <- events_info(ed, events = c("SHOT", "GOAL", "FREE KICK", "CORNER KICK"))
@@ -133,9 +149,21 @@ data-fig-align="center" />
 <img src="man/voronoi.gif" style="width:80.0%"
 data-fig-align="center" />
 
+### 4) Team avg. postitioning and stats by ON/OFF ball possession states
+
+With the function **soccer_plot_poss()** you can create a plot showing
+for each team the avg. position of players, its convex hull and position
+stats.
+
+    soccer_plot_poss(td, event_path, team = "Away", pitch_fill = "grey40",
+                     on_ball_col = "white", off_ball_col = "#74a9cf")
+
+<img src="man/avg_pos_stats.png" style="width:80.0%"
+data-fig-align="center" />
+
 ## Player level
 
-### 4) Player stats calculation and visualization:
+### 5) Player stats calculation and visualization:
 
 With the function **players_stats()** you calculate for every player the
 minutes played, avg. speed, total distance and distance for different
@@ -153,7 +181,7 @@ data-fig-align="center" />
 <img src="man/players_graph.png" style="width:80.0%"
 data-fig-align="center" />
 
-### 5) To get players sprints information:
+### 6) To get players sprints information:
 
 With the function **sprints_info()** you apply the needed data
 processing to get the number of sprints that every player for a chosen
@@ -173,7 +201,7 @@ number of sprints:
 <img src="man/players_sprints.png" style="width:25.0%"
 data-fig-align="center" />
 
-### 6) To create a player plot with specific actions:
+### 7) To create a player plot with specific actions:
 
 With the function **player_plot()** you can create a plot showing where
 and when (labels show Time\[s\]) specific actions made by a player
@@ -189,7 +217,7 @@ For example, the sprints made by the player 10 of the Home team:
 <img src="man/sprints_player_10.png" style="width:80.0%"
 data-fig-align="center" />
 
-### 7) To create a player animation highlighting :
+### 8) To create a player animation highlighting :
 
 With the function **player_animate()** you are able to create a 2D
 animation for the specific time range when one specific player sprint
@@ -205,7 +233,15 @@ data-fig-align="center" />
 - A soccer pitch of dimensions 105x68 meters was considered by default.
 - Reverted coordinates for Period 2: Teams are always attacking in the
   same direction.
+- Avg. positioning viz and stats consider the 11 players who played the
+  highest amount of minutes
 
 ## Currently working on:
 
-- Team positioning splitting by ON/OFF ball possession
+- target team ON possession vs opponent team OFF possession
+
+- split stats and positioning by context: score, venue, game state, etc.
+
+- add specific metric text annotations
+
+- additional data providers

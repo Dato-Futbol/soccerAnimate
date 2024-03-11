@@ -7,7 +7,7 @@ Author: person(given = "Ismael",
          role = c("aut", "cre"),
          email = "ismaelgomezs@gmail.com")
 Maintainer: Ismael Gómez Schmidt <ismaelgomezs@gmail.com>
-Description: This packages allows you to create 2D animations of soccer tracking data in addition to do some player calculations.
+Description: This packages allows you to create 2D animations of soccer tracking data in addition to do some player calculations and team possession stats.
 License: GPL-2
 Imports:
   deldir,
@@ -19,12 +19,18 @@ Imports:
   ggplot2,
   ggrepel,
   gifski,
+  glue,
   grDevices,
+  gt,
+  gtExtras,
   janitor, 
   magrittr,
+  patchwork,
+  png,
   purrr,
   readr,
   rlang,
+  stats,
   stringr,
   tidyr,
   transformr  
