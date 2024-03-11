@@ -25,6 +25,7 @@
 #' @import ggplot2
 #' @import patchwork
 #' @importFrom magrittr %>%
+#' @importFrom stringr str_to_title
 #'
 #' @export
 #'
