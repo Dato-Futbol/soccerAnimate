@@ -113,6 +113,7 @@ get_pitch <- function(pitch_fill = "#74a9cf", pitch_col = "lightgrey", pitch_lon
 #' @import dplyr
 #' @import tidyr
 #' @importFrom stats sd
+#' @importFrom ggtext element_markdown
 #' @import glue
 #' @import ggplot2
 #' @importFrom utils head

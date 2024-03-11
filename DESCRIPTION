@@ -18,6 +18,7 @@ Imports:
   ggforce,
   ggplot2,
   ggrepel,
+  ggtext,
   gifski,
   glue,
   grDevices,
