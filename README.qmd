@@ -5,6 +5,7 @@ format:
     preview-mode: html
 ---
 
+![](man/soccerAnimate.png){fig-align="center" width=20%}
 
 An R package to create 2D animations of soccer tracking data
 

@@ -1,5 +1,8 @@
 # {soccerAnimate}
 
+<img src="man/soccerAnimate.png" style="width:20.0%"
+data-fig-align="center" />
+
 An R package to create 2D animations of soccer tracking data
 
 ## How to install it?
