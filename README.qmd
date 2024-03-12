@@ -5,9 +5,12 @@ format:
     preview-mode: html
 ---
 
-![](man/soccerAnimate.png){fig-align="center" width=20%}
-
 An R package to create 2D animations of soccer tracking data
+
+<p align="center">
+  <img width="200" src="man/soccerAnimate.png">
+</p>
+
 
 ## How to install it?
 ```
@@ -64,7 +67,9 @@ The following additions were added for the last version of the package (*v1.1 at
 
 The package already has multiple functions to use, so it is usefulness to think about of them like a workflow for a either players or team level, as the following diagram shows:
 
-![](man/mermaid-figure-1.png){fig-align="center" width=80%}
+<p align="center">
+  <img width="80%" src="man/mermaid-figure-1.png">
+</p>
 
 
 The functions allows you to do the following tasks:
